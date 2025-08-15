@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio | B.Tech Student</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        scroll-behavior: smooth;
+    }
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #0d0d0d;
+        color: white;
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
+    a {
+        color: #bb86fc;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    a:hover {
+        color: #ff79c6;
+    }
+
+    /* ===== PRELOADER ===== */
+    #preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: #0d0d0d;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        transition: opacity 1s ease, visibility 1s ease;
+    }
+    #preloader img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 3px solid #bb86fc;
+        animation: pulse 1.2s infinite ease-in-out;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    #preloader.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: #1a1a1a;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+    header h1 {
+        font-size: 1.5rem;
+        color: #bb86fc;
+    }
+    nav a {
+        margin-left: 20px;
+        font-weight: bold;
+        position: relative;
+    }
+    nav a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px;
+        width: 0%;
+        height: 2px;
+        background: #ff79c6;
+        transition: width 0.3s ease;
+    }
+    nav a:hover::after {
+        width: 100%;
+    }
+
+    /* ===== BUTTON STYLE ===== */
+    .btn {
+        display: inline-block;
+        background: #bb86fc;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
+    .btn:hover {
+        background: #2f77fd;
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(255,121,198,0.5);
+    }
+
+    /* ===== SECTIONS ===== */
+    section {
+        padding: 100px 20px;
+        max-width: 1000px;
+        margin: auto;
+    }
+    h2 {
+        color: #bb86fc;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    /* ===== HERO ===== */
+    #home {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+    }
+    #home img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        border: 3px solid #bb86fc;
+        margin-bottom: 20px;
+    }
+
+   #skills {
+        text-align: center;
+        padding: 50px 20px;
+        background-color: #121212;
+    }
+    .skills-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+    }
+    .skill {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #1a1a1a;
+        padding: 20px;
+        border-radius: 10px;
+        width: 100px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .skill i {
+        font-size: 3rem;
+    }
+    .skill span {
+        margin-top: 10px;
+        font-size: 1rem;
+        color: white;
+    }
+    .skill:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 15px rgba(187, 134, 252, 0.7);
+    }
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    .project {
+        background: #1a1a1a;
+        padding: 15px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    .project:hover {
+        transform: translateY(-5px);
+        background: #292929;
+        box-shadow: 0 0 15px rgba(255,121,198,0.4);
+    }
+
+    /* ===== CONTACT ===== */
+    .contact-info {
+        text-align: center;
+    }
+    .contact-info p {
+        margin: 5px 0;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+        background: #1a1a1a;
+        text-align: center;
+        padding: 15px;
+        font-size: 0.9rem;
+        color: #bbb;
+        margin-top: 50px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+        header {
+            flex-direction: column;
+        }
+        nav {
+            margin-top: 10px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<!-- ===== PRELOADER ===== -->
+<div id="preloader">
+    <img src="https://via.placeholder.com/150" alt="Loading...">
+</div>
+
+<header>
+    <h1>John Doe</h1>
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+    </nav>
+</header>
+
+<section id="home">
+    <img src="https://via.placeholder.com/150" alt="Profile Photo">
+    <h3>Hi, I'm John Doe</h3>
+    <p>A passionate B.Tech student specializing in Computer Science. I love creating web applications, solving coding problems, and exploring new technologies.</p>
+    <br>
+    <a href="#projects" class="btn">View My Work</a>
+</section>
+
+<section id="about">
+    <h2>About Me</h2>
+    <p>I am currently pursuing my Bachelor of Technology in Computer Science. I have a strong interest in full-stack web development, machine learning, and competitive programming. My goal is to work on innovative projects that make a real-world impact.</p>
+</section>
+
+<section id="skills">
+    <h2>My Skills</h2>
+    <div class="skills-container">
+        <div class="skill"><i class="devicon-html5-plain colored"></i><span>HTML</span></div>
+        <div class="skill"><i class="devicon-css3-plain colored"></i><span>CSS</span></div>
+        <div class="skill"><i class="devicon-javascript-plain colored"></i><span>JavaScript</span></div>
+        <div class="skill"><i class="devicon-python-plain colored"></i><span>Python</span></div>
+        <div class="skill"><i class="devicon-cplusplus-plain colored"></i><span>C++</span></div>
+        <div class="skill"><i class="devicon-java-plain colored"></i><span>Java</span></div>
+    </div>
+</section>
+
+<!-- Devicon CSS CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+
+
+<section id="projects">
+    <h2>Projects</h2>
+    <div class="projects-grid">
+        <div class="project">
+            <h3>Portfolio Website</h3>
+            <p>A personal portfolio to showcase my skills and projects.</p>
+        </div>
+        <div class="project">
+            <h3>Weather App</h3>
+            <p>A web app to check real-time weather updates using API.</p>
+        </div>
+        <div class="project">
+            <h3>Todo List</h3>
+            <p>A simple todo app with local storage functionality.</p>
+        </div>
+    </div>
+</section>
+
+<section id="contact">
+    <h2>Contact Me </h2>
+    <div class="contact-info">
+        <p>Email: johndoe@example.com</p>
+        <p>LinkedIn: linkedin.com/in/johndoe</p>
+        <p>GitHub: github.com/johndoe</p>
+    </div>
+</section>
+
+
+
+<script>
+    // Preloader fade effect
+    window.addEventListener("load", function() {
+        const preloader = document.getElementById("preloader");
+        setTimeout(() => {
+            preloader.classList.add("hidden");
+            window.scrollTo(0, 0); // always stay at top
+        }, 1500);
+    });
+</script>
+<section id="contact">
+    <h2>Contact Me Directly</h2>
+    <div class="contact-info">
+        <form id="contactForm">
+            <input type="text" id="name" name="name" placeholder="Your Name" required>
+            <input type="email" id="email" name="email" placeholder="Your Email" required>
+            <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+            <button type="submit" class="btn">Send Message</button>
+        </form>
+    </div>
+</section>
+
+<style>
+    /* Contact Form Styling */
+    #contactForm {
+        max-width: 500px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    #contactForm input, #contactForm textarea {
+        background: #1a1a1a;
+        border: 2px solid #bb86fc;
+        border-radius: 5px;
+        padding: 10px;
+        color: white;
+        font-size: 1rem;
+        outline: none;
+        transition: border 0.3s ease, box-shadow 0.3s ease;
+    }
+    #contactForm input:focus, #contactForm textarea:focus {
+        border-color: #ff79c6;
+        box-shadow: 0 0 10px rgba(255,121,198,0.5);
+    }
+</style>
+
+<script>
+    // Contact form mailto function
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const message = document.getElementById("message").value;
+
+        const subject = encodeURIComponent("Portfolio Contact from " + name);
+        const body = encodeURIComponent("Name: " + name + "\nEmail: " + email + "\n\nMessage:\n" + message);
+
+        window.location.href = `mailto:youremail@example.com?subject=${subject}&body=${body}`;
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+        // Retrieve the stored data from localStorage
+        const portfolioData = JSON.parse(localStorage.getItem('portfolioData'));
+
+        if (!portfolioData) {
+            console.error("No portfolio data found in localStorage. Redirecting to builder.");
+            // Optional: Redirect if no data is found, e.g., if the user accesses the page directly
+            // window.location.href = "builder.html";
+            return;
+        }
+
+        // --- Populate the page with the collected data ---
+
+        // Profile Photo: The photo upload requires a server to handle.
+        // For a static site, you can use FileReader to display it.
+        // This is an advanced topic; for now, we'll stick to text data.
+
+        // Personal Info
+        const userNameElement = document.getElementById('userName');
+        if (userNameElement) userNameElement.textContent = portfolioData.name || 'Your Name';
+        
+        const userBioElement = document.getElementById('userBio');
+        if (userBioElement) userBioElement.textContent = portfolioData.about || 'Your bio here...';
+
+        // Skills
+        const skillsContainer = document.getElementById('userSkills');
+        if (skillsContainer && portfolioData.skills && Array.isArray(portfolioData.skills)) {
+            skillsContainer.innerHTML = ''; // Clear existing content
+            portfolioData.skills.forEach(skill => {
+                const skillTag = document.createElement('span');
+                skillTag.textContent = skill;
+                skillTag.className = 'skill-tag'; // Make sure this class is styled in your CSS
+                skillsContainer.appendChild(skillTag);
+            });
+        }
+        
+        // Project 1
+        const project1Title = document.getElementById('project1Title');
+        if (project1Title) project1Title.textContent = portfolioData.project1_title || 'Project 1 Title';
+        const project1Desc = document.getElementById('project1Desc');
+        if (project1Desc) project1Desc.textContent = portfolioData.project1_desc || 'Project 1 description.';
+        const project1Link = document.getElementById('project1Link');
+        if (project1Link) {
+            project1Link.href = portfolioData.project1_link || '#';
+            project1Link.textContent = portfolioData.project1_link ? 'View Project' : 'No link provided';
+        }
+
+        // Check and populate Project 2 if data exists
+        if (portfolioData.project2_title) {
+            let project2Container = document.getElementById('project2');
+            if (!project2Container) {
+                // If the template doesn't have a placeholder for Project 2, you can create one dynamically
+                project2Container = document.createElement('div');
+                project2Container.id = 'project2';
+                project2Container.innerHTML = `
+                    <h3></h3>
+                    <p></p>
+                    <a href="#"></a>
+                `;
+                document.getElementById('projects-section').appendChild(project2Container);
+            }
+            project2Container.querySelector('h3').textContent = portfolioData.project2_title;
+            project2Container.querySelector('p').textContent = portfolioData.project2_desc;
+            project2Container.querySelector('a').href = portfolioData.project2_link || '#';
+            project2Container.querySelector('a').textContent = portfolioData.project2_link ? 'View Project' : 'No link provided';
+        }
+
+        // Social Links
+        const githubLink = document.getElementById('githubLink');
+        if (githubLink && portfolioData.github) {
+            githubLink.href = portfolioData.github;
+        }
+
+        const linkedinLink = document.getElementById('linkedinLink');
+        if (linkedinLink && portfolioData.linkedin) {
+            linkedinLink.href = portfolioData.linkedin;
+        }
+
+        // Important: Remove the data from localStorage after populating the template
+        // so that the next time the user visits, they don't see old data.
+        // localStorage.removeItem('portfolioData');
+    });
+</script>
+<footer>
+    <p>© Gaurang bhagat. All rights reserved.</p>
+</footer>
+
+
+</body>
+</html>

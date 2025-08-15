@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Student Portfolio — Gradient Theme</title>
+
+  <!-- Google fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ---------- Basic reset ---------- */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin:0; font-family: 'Poppins', sans-serif; color:#0f1724; background: #f7fafc; -webkit-font-smoothing:antialiased; }
+
+    :root{
+      --bg: linear-gradient(135deg,#fff7ed 0%, #fff6f9 20%, #f0f9ff 60%, #f6f8ff 100%);
+      --card: rgba(255,255,255,0.75);
+      --muted: #6b7280;
+      --accent-a: #ff7a18; /* orange */
+      --accent-b: #af002d; /* deep pink/red */
+      --accent-c: #06b6d4; /* cyan */
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 10px 30px rgba(16,24,40,0.08);
+    }
+
+    body { background: var(--bg); }
+
+    /* ---------- Container ---------- */
+    .container { max-width:1200px; margin: 18px auto; padding: 0 20px; }
+
+    /* ========== NAVBAR ========== */
+    header.site-nav {
+      position: sticky; top: 16px; z-index: 60;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:18px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.9), rgba(255,255,255,0.85));
+      padding:10px 18px; border-radius:12px; box-shadow:var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+    .brand { display:flex; gap:12px; align-items:center; font-weight:700; color:#111827; }
+    .logo {
+      width:44px; height:44px; border-radius:10px;
+      background: linear-gradient(135deg,var(--accent-a), var(--accent-b));
+      color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif;
+      box-shadow: 0 6px 16px rgba(175,0,45,0.12);
+    }
+    nav.links { display:flex; gap:10px; align-items:center; }
+    nav.links a {
+      padding:8px 14px; border-radius:999px; color:#0f1724; text-decoration:none; font-weight:600; font-size:14px;
+      transition: all .18s ease;
+    }
+    nav.links a:hover { transform: translateY(-3px); background: rgba(15,23,36,0.04); }
+    nav.links a.cta {
+      background: linear-gradient(90deg,var(--accent-a),var(--accent-c)); color:#fff; box-shadow: 0 8px 24px rgba(6,182,212,0.08);
+    }
+
+    /* ========== HERO ========== */
+    .hero {
+      display:grid; grid-template-columns: 1fr 420px; gap:36px; align-items:center;
+      margin-top:22px;
+      padding:36px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.45));
+      border-radius:14px; box-shadow: var(--shadow);
+    }
+    .hero-left { padding-right:6px; }
+    .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:rgba(255,122,24,0.12); color:var(--accent-b); font-weight:600; font-size:13px; margin-bottom:12px; }
+    .hero-title { font-family:'Inter',sans-serif; font-size:44px; line-height:1.02; margin:6px 0 8px; font-weight:700; color:#0b1220; }
+    .hero-title .accent { background: linear-gradient(90deg,var(--accent-a),var(--accent-b)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+    .hero-sub { color:var(--muted); font-size:16px; margin-bottom:18px; }
+    .meta-row { display:flex; gap:18px; align-items:center; margin-bottom:18px; flex-wrap:wrap; }
+    .meta-card { background:var(--card); padding:12px 14px; border-radius:10px; box-shadow: 0 6px 18px rgba(12,18,20,0.04); min-width:120px; }
+    .meta-card strong { display:block; font-size:20px; }
+    .cta-row { display:flex; gap:12px; margin-top:6px; flex-wrap:wrap; }
+    .btn-primary { background: linear-gradient(90deg,var(--accent-a),var(--accent-c)); color:#fff; padding:11px 18px; border-radius:999px; font-weight:700; box-shadow: 0 8px 28px rgba(6,182,212,0.08); }
+    .btn-outline { padding:11px 18px; border-radius:999px; border:1px solid rgba(15,23,36,0.06); background:transparent; font-weight:600; }
+
+    /* hero-right profile */
+    .hero-right { position:relative; display:flex; align-items:center; justify-content:center; }
+    .semi-bg {
+      position:absolute; bottom:0; width:420px; height:210px; border-radius:210px 210px 0 0;
+      background: linear-gradient(180deg, rgba(255,122,24,0.14), rgba(10,132,255,0.04));
+      z-index:0;
+    }
+    .profile {
+      width:320px; height:420px; border-radius:14px; overflow:hidden; z-index:2; box-shadow: 0 24px 48px rgba(15,23,36,0.08);
+      display:flex; align-items:center; justify-content:center; background:#fff;
+    }
+    .profile img { width:100%; height:100%; object-fit:cover; display:block; }
+
+    /* ========== ABOUT ========== */
+    section { padding:70px 0; }
+    .section-head { text-align:center; margin-bottom:28px; }
+    .section-title { display:inline-block; padding:8px 22px; border-radius:999px; background: linear-gradient(90deg, rgba(255,122,24,0.12), rgba(6,182,212,0.06)); font-weight:700; }
+
+    .about-grid { display:grid; grid-template-columns: 360px 1fr; gap:30px; align-items:center; max-width:1100px; margin:0 auto; }
+    .about-photo { width:360px; border-radius:12px; overflow:hidden; box-shadow: var(--shadow); }
+    .about-photo img { width:100%; height:100%; object-fit:cover; display:block; }
+    .about-bio { color:var(--muted); line-height:1.6; }
+    .skill-badges { display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+
+    .skill-badges .badge-s { background:linear-gradient(90deg,#fff,#fff); padding:8px 12px; border-radius:999px; border:1px solid rgba(15,23,36,0.06); font-weight:600; }
+
+    /* ========== SERVICES ========== */
+    .services-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:18px; max-width:1100px; margin:0 auto; }
+    .service-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.72));
+      padding:22px; border-radius:12px; box-shadow: var(--shadow); transition: transform .18s ease;
+    }
+    .service-card:hover { transform: translateY(-8px); }
+    .service-card h4 { margin:6px 0 8px; }
+    .service-card p { color:var(--muted); font-size:14px; line-height:1.5; }
+
+    /* ========== RESUME / TIMELINE ========== */
+    .resume-grid { max-width:1000px; margin:0 auto; display:grid; grid-template-columns: 1fr; gap:18px; }
+    .resume-item { background:var(--card); padding:16px; border-radius:10px; box-shadow: var(--shadow); }
+    .resume-item h4 { margin:0 0 6px; }
+    .resume-item small { color:var(--muted); }
+
+    /* ========== PROJECTS ========== */
+    .projects-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap:18px; max-width:1200px; margin:0 auto; }
+    .project {
+      border-radius:12px; overflow:hidden; position:relative; min-height:180px; display:flex; flex-direction:column; justify-content:flex-end;
+      background: linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.02));
+      box-shadow: var(--shadow);
+    }
+    .project .cover { height:140px; background-size:cover; background-position:center; }
+    .project .info { padding:14px; background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.75)); }
+    .project .title { font-weight:700; }
+    .project .meta { color:var(--muted); font-size:13px; margin-top:6px; }
+
+    /* ========== CONTACT ========== */
+    .contact-wrap { max-width:900px; margin:0 auto; display:grid; grid-template-columns: 1fr 360px; gap:20px; align-items:start; }
+    .contact-card { padding:18px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.75)); box-shadow: var(--shadow); }
+    .contact-form input, .contact-form textarea { width:100%; padding:12px 14px; border-radius:8px; border:1px solid rgba(15,23,36,0.06); margin-bottom:12px; font-size:14px; }
+    .contact-form button { background: linear-gradient(90deg,var(--accent-a),var(--accent-c)); color:#fff; padding:12px 16px; border-radius:10px; border:none; font-weight:700; }
+
+    /* ========== FOOTER ========== */
+    footer { margin-top:36px; padding:28px; text-align:center; color:var(--muted); }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width:1024px){
+      .hero { grid-template-columns: 1fr 360px; gap:20px; }
+      .about-grid { grid-template-columns: 1fr; }
+      .contact-wrap { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width:640px){
+      .hero { grid-template-columns: 1fr; padding:20px; }
+      .profile { width:260px; height:340px; }
+      .hero-title { font-size:28px; }
+      .services-grid { grid-template-columns: 1fr; }
+
+    
+    }
+
+    /* contact button */
+/* Contact Me Top Button */
+.contact-btn {
+    display: inline-block;
+    background: linear-gradient(45deg, #ff7eb3, #ff758c);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.contact-btn:hover {
+    background: linear-gradient(45deg, #6af2ae, #3bb2b8);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Send message button inside form */
+.contact-form button {
+    background: linear-gradient(45deg, hsl(224, 100%, 69%), #ff4fd0);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.contact-form button:hover {
+    background: linear-gradient(45deg, #42e695, #3bb2b8);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- NAVBAR -->
+    <header class="site-nav" role="navigation" aria-label="Main nav">
+      <div class="brand">
+        <div class="logo">ST</div>
+        <div style="font-weight:700">STUDENT<span style="color:var(--accent-b);">Folio</span></div>
+      </div>
+
+      <nav class="links" aria-label="Primary links">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#service">Service</a>
+        <a href="#resume">Resume</a>
+        <a href="#project">Project</a>
+        <a href="#contact" class="contact-btn nav-contact">Contact Me</a>
+
+      </nav>
+    </header>
+
+    <!-- HERO -->
+    <main id="home">
+      <section class="hero" aria-label="Hero">
+        <div class="hero-left">
+          <div class="badge">B.Tech • Final Year</div>
+          <h1 class="hero-title">Hi, I'm <span class="accent">Your Name</span></h1>
+          <div class="hero-sub">UI / UX Designer • Frontend dev • Open for internships</div>
+
+          <div class="meta-row">
+            <div class="meta-card">
+              <small style="color:var(--muted)">Internships</small>
+              <strong>1</strong>
+            </div>
+            <div class="meta-card">
+              <small style="color:var(--muted)">Projects</small>
+              <strong>6</strong>
+            </div>
+            <div class="meta-card">
+              <small style="color:var(--muted)">Skills</small>
+              <strong>HTML • CSS • JS</strong>
+            </div>
+          </div>
+
+          <div class="cta-row">
+            <a class="btn-primary" href="#project">See Projects</a>
+            <a class="btn-outline" href="#resume">Download Resume</a>
+          </div>
+        </div>
+
+        <div class="hero-right" aria-hidden="false">
+          <div class="semi-bg"></div>
+          <div class="profile">
+            <!-- Replace with your photo -->
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=900&q=80&auto=format&fit=crop" alt="Profile">
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="about" aria-label="About">
+        <div class="section-head">
+          <div class="section-title">ABOUT</div>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-photo">
+            <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=900&q=80&auto=format&fit=crop" alt="About photo">
+          </div>
+          <div>
+            <h3 style="margin-top:0">A little about me</h3>
+            <p class="about-bio">
+              I am a final-year B.Tech student focused on building intuitive user interfaces and front-end experiences. I enjoy turning designs into real products and learning new tools.
+            </p>
+
+            <div style="margin-top:12px">
+              <strong style="display:block;margin-bottom:8px">My skills</strong>
+              <div class="skill-badges">
+                <span class="badge-s">HTML</span>
+                <span class="badge-s">CSS</span>
+                <span class="badge-s">JavaScript</span>
+                <span class="badge-s">React</span>
+                <span class="badge-s">Figma</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SERVICES -->
+      <section id="service" aria-label="Services">
+        <div class="section-head">
+          <div class="section-title">SERVICES</div>
+        </div>
+
+        <div class="services-grid">
+          <div class="service-card">
+            <h4>UI / UX Design</h4>
+            <p>Wireframes, high-fidelity mockups and interactive prototypes using Figma.</p>
+          </div>
+          <div class="service-card">
+            <h4>Frontend Development</h4>
+            <p>Responsive web apps using HTML, CSS, JavaScript and React.</p>
+          </div>
+          <div class="service-card">
+            <h4>Prototype Testing</h4>
+            <p>Conduct usability tests and iterate on designs based on feedback.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESUME -->
+      <section id="resume" aria-label="Resume">
+        <div class="section-head">
+          <div class="section-title">RESUME</div>
+        </div>
+
+        <div class="resume-grid">
+          <div class="resume-item">
+            <h4>B.Tech — Computer Science</h4>
+            <small>College Name • 2021 - 2025</small>
+            <p style="color:var(--muted); margin-top:8px;">Relevant coursework: Data Structures, Web Dev, HCI, DBMS.</p>
+          </div>
+          <div class="resume-item">
+            <h4>Internship — Frontend Developer</h4>
+            <small>Company / Startup • Jun 2024 - Aug 2024</small>
+            <p style="color:var(--muted); margin-top:8px;">Worked on building responsive components and integrating APIs.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section id="project" aria-label="Projects">
+        <div class="section-head">
+          <div class="section-title">PROJECTS</div>
+        </div>
+
+        <div class="projects-grid">
+          <!-- project 1 -->
+          <article class="project">
+            <div class="cover" style="background-image:url('https://picsum.photos/600/400?random=21')"></div>
+            <div class="info">
+              <div class="title">CampusConnect (Social App)</div>
+              <div class="meta">React • Firebase • Figma</div>
+              <div style="margin-top:10px"><a target="_blank" href="#" class="btn-outline">Live</a> <a target="_blank" href="#" class="btn-primary" style="padding:8px 12px;font-size:13px">Details</a></div>
+            </div>
+          </article>
+
+          <!-- project 2 -->
+          <article class="project">
+            <div class="cover" style="background-image:url('https://picsum.photos/600/400?random=22')"></div>
+            <div class="info">
+              <div class="title">Lirante — Food prototype</div>
+              <div class="meta">Figma • Usability testing</div>
+              <div style="margin-top:10px"><a target="_blank" href="#" class="btn-outline">Prototype</a> <a target="_blank" href="#" class="btn-primary" style="padding:8px 12px;font-size:13px">Case study</a></div>
+            </div>
+          </article>
+
+          <!-- project 3 -->
+          <article class="project">
+            <div class="cover" style="background-image:url('https://picsum.photos/600/400?random=23')"></div>
+            <div class="info">
+              <div class="title">Dashboard UI</div>
+              <div class="meta">HTML • CSS • JS</div>
+              <div style="margin-top:10px"><a target="_blank" href="#" class="btn-outline">Preview</a> <a target="_blank" href="#" class="btn-primary" style="padding:8px 12px;font-size:13px">Source</a></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+       
+      
+      <section id="contact" aria-label="Contact">
+        <div class="section-head">
+          <div class="section-title">CONTACT</div>
+        </div>
+
+        <div class="contact-wrap">
+          <div class="contact-card contact-form">
+            <h4>Send a message</h4>
+            <form id="contactForm">
+              <input type="text" name="name" placeholder="Your name" required>
+              <input type="email" name="email" placeholder="Your email" required>
+              <textarea name="message" rows="5" placeholder="Your message" required></textarea>
+              <button type="submit">Send message</button>
+            </form>
+          </div>
+
+          <aside class="contact-card" aria-label="Contact details">
+            <h4>Contact info</h4>
+            <p style="color:var(--muted)">Email: student@example.com</p>
+            <p style="color:var(--muted)">Phone: +91 77xxxxxx36</p>
+            <p style="color:var(--muted)">Location: City, State</p>
+            <div style="margin-top:12px">
+              <strong>Available for:</strong>
+              <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap">
+                <span class="badge-s">Internships</span>
+                <span class="badge-s">Freelance</span>
+                <span class="badge-s">Open Source</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <div style="max-width:1100px;margin:0 auto;padding:20px 0;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div>© 2025  • B.Tech Students Ips off campus <br> for more details - #moreinfo</div></div>
+        <!-- <div>Made with ❤️ • <a href="#project">Projects</a></div> -->
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ---------- JS: small helpers ---------- -->
+  <script>
+    // highlight nav link when section visible (intersection observer)
+    (function(){
+      const links = document.querySelectorAll('nav.links a');
+      const sections = Array.from(document.querySelectorAll('main section'));
+      if(!('IntersectionObserver' in window)) return;
+
+      const obs = new IntersectionObserver((entries)=>{
+        entries.forEach(ent=>{
+          if(ent.isIntersecting){
+            const id = ent.target.id;
+            links.forEach(a=>{
+              a.classList.toggle('active', a.getAttribute('href') === '#'+id);
+            });
+          }
+        });
+      }, { root: null, threshold: 0.45 });
+
+      sections.forEach(s=> obs.observe(s));
+    })();
+
+    // contact form demo (no backend) — show alert and reset
+    document.getElementById('contactForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      alert('Thanks! Message sent (demo). Replace with backend/Email integration to make it real.');
+      this.reset();
+    });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        // Retrieve the stored data from localStorage
+        const portfolioData = JSON.parse(localStorage.getItem('portfolioData'));
+
+        if (!portfolioData) {
+            console.error("No portfolio data found in localStorage. Redirecting to builder.");
+            // Optional: Redirect if no data is found, e.g., if the user accesses the page directly
+            // window.location.href = "builder.html";
+            return;
+        }
+
+        // --- Populate the page with the collected data ---
+
+        // Profile Photo: The photo upload requires a server to handle.
+        // For a static site, you can use FileReader to display it.
+        // This is an advanced topic; for now, we'll stick to text data.
+
+        // Personal Info
+        const userNameElement = document.getElementById('userName');
+        if (userNameElement) userNameElement.textContent = portfolioData.name || 'Your Name';
+        
+        const userBioElement = document.getElementById('userBio');
+        if (userBioElement) userBioElement.textContent = portfolioData.about || 'Your bio here...';
+
+        // Skills
+        const skillsContainer = document.getElementById('userSkills');
+        if (skillsContainer && portfolioData.skills && Array.isArray(portfolioData.skills)) {
+            skillsContainer.innerHTML = ''; // Clear existing content
+            portfolioData.skills.forEach(skill => {
+                const skillTag = document.createElement('span');
+                skillTag.textContent = skill;
+                skillTag.className = 'skill-tag'; // Make sure this class is styled in your CSS
+                skillsContainer.appendChild(skillTag);
+            });
+        }
+        
+        // Project 1
+        const project1Title = document.getElementById('project1Title');
+        if (project1Title) project1Title.textContent = portfolioData.project1_title || 'Project 1 Title';
+        const project1Desc = document.getElementById('project1Desc');
+        if (project1Desc) project1Desc.textContent = portfolioData.project1_desc || 'Project 1 description.';
+        const project1Link = document.getElementById('project1Link');
+        if (project1Link) {
+            project1Link.href = portfolioData.project1_link || '#';
+            project1Link.textContent = portfolioData.project1_link ? 'View Project' : 'No link provided';
+        }
+
+        // Check and populate Project 2 if data exists
+        if (portfolioData.project2_title) {
+            let project2Container = document.getElementById('project2');
+            if (!project2Container) {
+                // If the template doesn't have a placeholder for Project 2, you can create one dynamically
+                project2Container = document.createElement('div');
+                project2Container.id = 'project2';
+                project2Container.innerHTML = `
+                    <h3></h3>
+                    <p></p>
+                    <a href="#"></a>
+                `;
+                document.getElementById('projects-section').appendChild(project2Container);
+            }
+            project2Container.querySelector('h3').textContent = portfolioData.project2_title;
+            project2Container.querySelector('p').textContent = portfolioData.project2_desc;
+            project2Container.querySelector('a').href = portfolioData.project2_link || '#';
+            project2Container.querySelector('a').textContent = portfolioData.project2_link ? 'View Project' : 'No link provided';
+        }
+
+        // Social Links
+        const githubLink = document.getElementById('githubLink');
+        if (githubLink && portfolioData.github) {
+            githubLink.href = portfolioData.github;
+        }
+
+        const linkedinLink = document.getElementById('linkedinLink');
+        if (linkedinLink && portfolioData.linkedin) {
+            linkedinLink.href = portfolioData.linkedin;
+        }
+
+        // Important: Remove the data from localStorage after populating the template
+        // so that the next time the user visits, they don't see old data.
+        // localStorage.removeItem('portfolioData');
+    });
+  </script>
+</body>
+</html>

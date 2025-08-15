@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Portfolio</title>   
+                             
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playwrite+AU+QLD:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Klee+One&family=Playwrite+AU+QLD:wght@100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+  <style>
+    html {
+      scroll-behavior: smooth; /* Smooth scroll effect */
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #fff;
+    }
+
+    /* Navbar  */
+    nav {
+      background: black;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 30px;
+    }
+      /* Navbar texts */
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    nav a:hover {
+      transform: scale(1.15);
+    }
+      /*top contact button right side */
+    nav .contact-btn {
+      background: white;
+      color: black;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    nav .contact-btn:hover {
+      background: #00ffff;
+      color: black;
+      box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+    }
+
+    /* main front page  */
+    .hero {
+      display: flex;
+      height: 90vh; 
+    }
+
+    .left {
+      flex: 1;
+      background: #f2f2f2;
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      clip-path: polygon(0 0, 80% 0, 100% 100%, 0% 100%);
+    }
+      /* left text - hi i am   */
+    .left h2 {
+      font-weight: 300;
+      margin-bottom: 5px;
+      margin-left: 1%;
+      margin-bottom: -5%;
+    }
+      /* person  */
+    .left h1 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 60px;
+      font-weight: bold;
+      margin-bottom: 1px;
+    }  /* left text - "about me..." */
+    .left p {
+      font-size: 25px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+        /* left text "occupation"*/
+    .left h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 50; 
+      font-size: 40px;
+      margin-left: 6%;
+      margin-top: 02%;
+      color: rgba(0, 0, 0, 0.6);
+      text-transform: uppercase;
+    }
+      /* main page email,github,linkdin logo with the link  */
+    .social-links a {
+      margin-right: 25px;
+      font-size: 5px;
+      text-decoration: none;
+      color: black;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .social-links a:hover img {
+      transform: scale(1.3);
+      filter: drop-shadow(0 0 5px #00ffff)
+              drop-shadow(0 0 10px #00ffff);
+    }
+
+    .social-links img {
+      height: 40px;
+      width: 40px;
+      vertical-align: middle;
+    }
+
+      /* right side main image */
+    .right {
+      flex: 1;
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+      transition: all 0.3s ease;
+    }
+
+    /* Glow effect on hover */
+    .right:hover {
+      box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #00ffff;
+      z-index: 1;
+    }
+
+    .right img {
+      max-width: 600px;
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .right:hover img {
+      transform: scale(1.05);
+      filter: drop-shadow(0 0 5px #00ffff)
+              drop-shadow(0 0 7px #00ffff)
+              drop-shadow(0 0 2px #00ffff);
+    }
+
+    /* About Section */
+    .about-section {
+      padding: 80px;
+      text-align: center;
+      background: linear-gradient(to right, #f2f2f2, #fff);
+    }
+      /* about me text inside the box 2nd page */
+    .about-section h2 {
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+      /* about section paragraph*/
+    .about-section p {
+      max-width: 800px;
+      margin: auto;
+      font-size: 18px;
+      color: #555;
+    }
+.about-section {
+  padding: 100px 20px; /* main section*/
+  text-align: center;
+  background: linear-gradient(to right, #f5f5f5, #fff);
+}
+
+.about-container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.about-title {
+  display: inline-block;
+  border: 3px solid black;
+  padding: 15px 50px;
+  font-size: 22px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  margin-bottom: 30px;
+}
+
+.about-text {
+  max-width: 700px;
+  margin: auto;
+  font-size: 50px;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 30px;
+}
+
+.explore {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+/* line below the experience section is the divider */
+.divider {
+  width: 100px;
+  height: 2px;
+  background: black;
+  margin: 20px auto;
+  position: relative;
+}
+
+.about-services {
+  display: flex;
+  justify-content: center;
+  gap: 250px;
+  margin-top: 80px;
+  flex-wrap: wrap;
+}
+
+.service-box {
+  width: 300px;
+  text-align: center;
+  padding: 20px;
+}
+/*box headings*/
+.service-box h3 {
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+}
+
+/*box paragraphs*/
+.service-box p {
+  font-size: 17px;
+  color: #555;
+  line-height: 1.6;
+}
+
+
+
+
+
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <a href="#about">About me</a>
+    <a href="#skills">Skills</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#contact" class="contact-btn">Contact Me</a>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero"> 
+    <div class="left">
+      <h2>Hi, I am</h2>
+      <h1 id="displayName">Sharad Shukla</h1>
+      <h3 id="myoccupation">web developer</h3>
+      <p id="displayAbout">About me...</p>
+      <div class="social-links">
+        <a id="emailLink" href="#"><img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" width="20"></a>
+        <a id="githubLink" href="#"><img src="https://cdn-icons-png.flaticon.com/512/733/733553.png" width="20"></a>
+        <a id="linkedinLink" href="#"><img src="https://cdn-icons-png.flaticon.com/512/3536/3536505.png" width="20"></a>
+      </div>
+    </div>
+    <div class="right">
+      <img id="profileImage" src="theme1person.png.png" alt="Profile Picture">
+    </div>
+  </section>
+
+  
+  <!-- About Section -->
+<section id="about" class="about-section">
+  <div class="about-container">
+    <h2 class="about-title">ABOUT ME</h2>
+    <p class="about-text">
+      Nulla in velit a metus rhoncus tempus. Nulla congue nulla vel sem varius finibus. 
+      Sed ornare sit amet lorem sed viverra. In vel urna quis libero viverra facilisis ut ac est.
+    </p>
+       <div><br></div>
+    <div class="explore">
+      <span>|</span> EXPLORE <span>|</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="about-services">
+      <div class="service-box">
+        <h3>PASSIONATE</h3>
+        <p>I can design the site based on your needs and suggestions. 
+           I can also design the site from scratch and consult you during the job.</p>
+      </div>
+      <div class="service-box">
+        <h3>SCHOOLING</h3>
+        <p>I can design the site based on your needs and suggestions. 
+           I can also design the site from scratch and consult you during the job.</p>
+      </div>
+      <div class="service-box">
+        <h3>EXPERIENCE </h3>
+        <p>I can design the site based on your needs and suggestions. 
+           I can also design the site from scratch and consult you during the job.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+  </div>
+</section>
+
+
+<!-- Skills Section -->
+<section id="skills" class="skills-section">
+  <div class="skills-container">
+    <h2 class="section-title">SKILLS</h2>
+    <p class="section-subtitle">
+      Here are some of the technologies and tools I work with to create amazing projects.
+    </p>
+
+    <div class="skills-grid">
+      <div class="skill-card html-skill">
+        <h3>HTML & CSS</h3>
+        <p>Building responsive and beautiful user interfaces with modern design practices.</p>
+      </div>
+      <div class="skill-card js-skill">
+        <h3>JavaScript</h3>
+        <p>Adding interactivity and dynamic behavior to websites and web apps.</p>
+      </div>
+      <div class="skill-card react-skill">
+        <h3>React</h3>
+        <p>Creating fast and scalable single-page applications with reusable components.</p>
+      </div>
+      <div class="skill-card node-skill">
+        <h3>Node.js</h3>
+        <p>Backend development with APIs and server-side logic.</p>
+      </div>
+      <div class="skill-card mongo-skill">
+        <h3>MongoDB</h3>
+        <p>Managing data with a flexible and scalable NoSQL database.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Skills Section */
+
+.skills-container .section-title{
+  margin: 5%;
+}
+.skills-section {
+  padding: 60px 20px;
+  text-align: center;
+  background: #f9f9f9;
+}
+
+.skills-container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.section-title {
+  font-size: 32px;
+  font-weight: bold;
+  border: 2px solid black;
+  display: inline-block;
+  padding: 10px 30px;
+  margin-bottom: 10px;
+}
+
+.section-subtitle {
+  color: #555;
+  font-size: 16px;
+  margin-bottom: 40px;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.skill-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background-size: 120px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-blend-mode: lighten;
+  opacity: 0.95;
+}
+
+.skill-card h3, .skill-card p {
+  position: relative;
+  z-index: 2;
+}
+
+.skill-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 80px;
+  background-repeat: no-repeat;
+  background-position: top LEFT;
+  opacity: 0.3;
+  z-index: 1;
+}
+
+.skill-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 15px #00ffff;
+}
+
+/* Logos for each card */
+.html-skill::before {
+  background-image: url('https://cdn-icons-png.flaticon.com/512/732/732212.png');
+}
+.js-skill::before {
+  background-image: url('https://cdn-icons-png.flaticon.com/512/5968/5968292.png');
+}
+.react-skill::before {
+  background-image: url('https://cdn-icons-png.flaticon.com/512/1126/1126012.png');
+}
+.node-skill::before {
+  background-image: url('https://cdn-icons-png.flaticon.com/512/919/919825.png');
+}
+.mongo-skill::before {
+  background-image: url('https://cdn-icons-png.flaticon.com/512/919/919836.png');
+}
+</style>
+
+<!-- Portfolio Section -->
+<section id="portfolio" class="portfolio-section">
+  <h2 class="section-title">PORTFOLIO</h2>
+
+  <!-- Tabs -->
+  <div class="portfolio-tabs">
+    <div class="tab active" onclick="filterPortfolio('all', event)">ALL</div>
+    <div class="tab" onclick="filterPortfolio('coded', event)">CODED</div>
+    <div class="tab" onclick="filterPortfolio('designed', event)">DESIGNED</div>
+  </div>
+
+  <!-- Portfolio Items -->
+  <div class="portfolio-grid">
+    <div class="portfolio-item coded">
+      <a href="https://example.com/project1" target="_blank">
+        <img src="project1,png.png" alt="Project 1">
+      </a>
+    </div>
+    <div class="portfolio-item designed">
+      <a href="https://example.com/project2" target="_blank">
+        <img src="project1,png.png" alt="Project 2">
+      </a>
+    </div>
+    <div class="portfolio-item coded">
+      <a href="https://example.com/project3" target="_blank">
+        <img src="project1,png.png" alt="Project 3">
+      </a>
+    </div>
+    <div class="portfolio-item designed">
+      <a href="https://example.com/project4" target="_blank">
+        <img src="project1,png.png" alt="Project 4">
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Portfolio Styles --> 
+<style>
+.portfolio-section {
+  padding: 80px 20px;
+  background: #eee;
+  text-align: center;
+  min-height: 100vh;
+}
+.section-title {
+  font-size: 32px;
+  font-weight: bold;
+  border: 2px solid black;
+  display: inline-block;
+  padding: 10px 30px;
+  margin-bottom: 20px;
+}
+.portfolio-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+.portfolio-tabs .tab {
+  cursor: pointer;
+  padding: 8px 20px;
+  border-bottom: 2px solid transparent;
+  font-weight: 500;
+}
+.portfolio-tabs .tab.active {
+  border-color: black;
+  font-weight: bold;
+}
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); /* min 400px रखो */
+  gap: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+.portfolio-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 5px;
+  transition: transform 0.3s ease;
+}
+.portfolio-item img:hover {
+  transform: scale(1.05);
+}
+</style>
+ 
+<!-- Portfolio JavaScript -->
+<script>
+function filterPortfolio(category, event) {
+  let items = document.querySelectorAll(".portfolio-item");
+  let tabs = document.querySelectorAll(".portfolio-tabs .tab");
+
+  tabs.forEach(tab => tab.classList.remove("active"));
+  event.target.classList.add("active");
+
+  items.forEach(item => {
+    if (category === "all" || item.classList.contains(category)) {
+      item.style.display = "block";
+    } else {
+      item.style.display = "none";
+    }
+  });
+}
+    document.addEventListener('DOMContentLoaded', () => {
+        // Retrieve the stored data from localStorage
+        const portfolioData = JSON.parse(localStorage.getItem('portfolioData'));
+
+        if (!portfolioData) {
+            console.error("No portfolio data found in localStorage. Redirecting to builder.");
+            // Optional: Redirect if no data is found, e.g., if the user accesses the page directly
+            // window.location.href = "builder.html";
+            return;
+        }
+
+        // --- Populate the page with the collected data ---
+
+        // Profile Photo: The photo upload requires a server to handle.
+        // For a static site, you can use FileReader to display it.
+        // This is an advanced topic; for now, we'll stick to text data.
+
+        // Personal Info
+        const userNameElement = document.getElementById('userName');
+        if (userNameElement) userNameElement.textContent = portfolioData.name || 'Your Name';
+        
+        const userBioElement = document.getElementById('userBio');
+        if (userBioElement) userBioElement.textContent = portfolioData.about || 'Your bio here...';
+
+        // Skills
+        const skillsContainer = document.getElementById('userSkills');
+        if (skillsContainer && portfolioData.skills && Array.isArray(portfolioData.skills)) {
+            skillsContainer.innerHTML = ''; // Clear existing content
+            portfolioData.skills.forEach(skill => {
+                const skillTag = document.createElement('span');
+                skillTag.textContent = skill;
+                skillTag.className = 'skill-tag'; // Make sure this class is styled in your CSS
+                skillsContainer.appendChild(skillTag);
+            });
+        }
+        
+        // Project 1
+        const project1Title = document.getElementById('project1Title');
+        if (project1Title) project1Title.textContent = portfolioData.project1_title || 'Project 1 Title';
+        const project1Desc = document.getElementById('project1Desc');
+        if (project1Desc) project1Desc.textContent = portfolioData.project1_desc || 'Project 1 description.';
+        const project1Link = document.getElementById('project1Link');
+        if (project1Link) {
+            project1Link.href = portfolioData.project1_link || '#';
+            project1Link.textContent = portfolioData.project1_link ? 'View Project' : 'No link provided';
+        }
+
+        // Check and populate Project 2 if data exists
+        if (portfolioData.project2_title) {
+            let project2Container = document.getElementById('project2');
+            if (!project2Container) {
+                // If the template doesn't have a placeholder for Project 2, you can create one dynamically
+                project2Container = document.createElement('div');
+                project2Container.id = 'project2';
+                project2Container.innerHTML = `
+                    <h3></h3>
+                    <p></p>
+                    <a href="#"></a>
+                `;
+                document.getElementById('projects-section').appendChild(project2Container);
+            }
+            project2Container.querySelector('h3').textContent = portfolioData.project2_title;
+            project2Container.querySelector('p').textContent = portfolioData.project2_desc;
+            project2Container.querySelector('a').href = portfolioData.project2_link || '#';
+            project2Container.querySelector('a').textContent = portfolioData.project2_link ? 'View Project' : 'No link provided';
+        }
+
+        // Social Links
+        const githubLink = document.getElementById('githubLink');
+        if (githubLink && portfolioData.github) {
+            githubLink.href = portfolioData.github;
+        }
+
+        const linkedinLink = document.getElementById('linkedinLink');
+        if (linkedinLink && portfolioData.linkedin) {
+            linkedinLink.href = portfolioData.linkedin;
+        }
+
+        // Important: Remove the data from localStorage after populating the template
+        // so that the next time the user visits, they don't see old data.
+        // localStorage.removeItem('portfolioData');
+    });
+</script>
+
+<!-- Contact Me Section -->
+<section id="contact" class="contact-section">
+  <div class="contact-container">
+    <h2 class="section-title">CONTACT ME</h2>
+    <p class="section-subtitle">Have a question or want to work together? Fill out the form below! <br> (OR)  <br>react out via whatsapp +91 9876543210</p>
+    
+    <form class="contact-form">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="number" name="phone number" placeholder="your contact number" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
+</section>
+
+<style>
+/* Contact Section */
+.contact-section {
+  padding: 80px 20px;
+  background: #f2f2f2;
+  text-align: center;
+}
+
+.contact-container {
+  max-width: 800px;
+  margin: auto;
+}
+
+.contact-section .section-title {
+  font-size: 32px;
+  font-weight: bold;
+  border: 2px solid black;
+  display: inline-block;
+  padding: 10px 30px;
+  margin-bottom: 10px;
+}
+
+.section-subtitle {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 40px;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: box-shadow 0.3s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  box-shadow: 0 0 10px #00ffff;
+}
+
+.contact-form button {
+  background: black;
+  color: white;
+  padding: 15px;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contact-form button:hover {
+  background: #00ffff;
+  color: black;
+  box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+}
+</style>
+
+</body>
+</html>
