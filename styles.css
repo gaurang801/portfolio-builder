@@ -1,41 +1,54 @@
 /* Modern Portfolio Builder Pro - Enhanced Styles */
 
-/* CSS Variables */
+/* CSS Variables - Royal Elegance Theme */
 :root {
-    /* Color Palette */
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --primary-light: #818cf8;
-    --secondary: #10b981;
-    --secondary-dark: #059669;
-    --accent: #f59e0b;
-    --accent-dark: #d97706;
+    /* Royal Color Palette */
+    --background: #1A1A2E;
+    --background-light: #16213E;
+    --primary: #E94560;
+    --primary-dark: #C73E56;
+    --primary-light: #F06292;
+    --secondary: #0F3460;
+    --secondary-dark: #0A2640;
+    --secondary-light: #1B4F72;
+    --accent: #FFD700;
+    --accent-dark: #DAA520;
+    --accent-light: #FFF8DC;
     
-    /* Gradients */
+    /* Royal Gradients */
     --primary-gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     --secondary-gradient: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
     --accent-gradient: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
-    --glass-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    --royal-gradient: linear-gradient(135deg, var(--background) 0%, var(--secondary) 100%);
+    --glass-gradient: linear-gradient(135deg, rgba(233, 69, 96, 0.1) 0%, rgba(15, 52, 96, 0.05) 100%);
+    --gold-glass: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+    
+    /* Text Colors */
+    --text-primary: #EAEAEA;
+    --text-secondary: #B8B8B8;
+    --text-muted: #8A8A8A;
     
     /* Neutral Colors */
     --white: #ffffff;
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-300: #d1d5db;
-    --gray-400: #9ca3af;
-    --gray-500: #6b7280;
-    --gray-600: #4b5563;
-    --gray-700: #374151;
-    --gray-800: #1f2937;
-    --gray-900: #111827;
+    --gray-50: #1A1A2E;
+    --gray-100: #16213E;
+    --gray-200: #0F3460;
+    --gray-300: #1B4F72;
+    --gray-400: #2D5A7A;
+    --gray-500: #4A6B8A;
+    --gray-600: #6B8A9A;
+    --gray-700: #8AA9BA;
+    --gray-800: #A9C8DA;
+    --gray-900: #C8E7FA;
     
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    /* Royal Shadows */
+    --shadow-sm: 0 2px 4px 0 rgba(233, 69, 96, 0.1);
+    --shadow-md: 0 8px 16px -4px rgba(233, 69, 96, 0.15), 0 4px 8px -2px rgba(15, 52, 96, 0.1);
+    --shadow-lg: 0 20px 25px -8px rgba(233, 69, 96, 0.2), 0 10px 10px -5px rgba(15, 52, 96, 0.1);
+    --shadow-xl: 0 25px 50px -12px rgba(233, 69, 96, 0.25), 0 15px 15px -8px rgba(15, 52, 96, 0.15);
+    --shadow-2xl: 0 35px 60px -15px rgba(233, 69, 96, 0.3), 0 20px 20px -10px rgba(15, 52, 96, 0.2);
+    --gold-shadow: 0 8px 32px rgba(255, 215, 0, 0.3);
+    --crimson-glow: 0 0 20px rgba(233, 69, 96, 0.4);
     
     /* Typography */
     --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -78,9 +91,14 @@ html {
 body {
     font-family: var(--font-primary);
     line-height: 1.6;
-    color: var(--gray-800);
-    background-color: var(--white);
+    color: var(--text-primary);
+    background: var(--background);
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(233, 69, 96, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(15, 52, 96, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
     overflow-x: hidden;
+    min-height: 100vh;
 }
 
 /* Container */
@@ -96,6 +114,8 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
     line-height: 1.2;
     margin-bottom: var(--spacing-md);
+    color: var(--text-primary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 h1 { font-size: 3.5rem; }
@@ -107,7 +127,7 @@ h6 { font-size: 1.125rem; }
 
 p {
     margin-bottom: var(--spacing-md);
-    color: var(--gray-600);
+    color: var(--text-secondary);
 }
 
 /* Buttons */
@@ -126,6 +146,8 @@ p {
     transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .btn::before {
@@ -135,7 +157,7 @@ p {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.3), transparent);
     transition: left var(--transition-slow);
 }
 
@@ -146,34 +168,42 @@ p {
 .btn-primary {
     background: var(--primary-gradient);
     color: var(--white);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md), var(--crimson-glow);
+    border: 1px solid rgba(233, 69, 96, 0.3);
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-xl), var(--crimson-glow);
+    border-color: var(--accent);
 }
 
 .btn-secondary {
-    background: var(--gray-100);
-    color: var(--gray-700);
-    border: 1px solid var(--gray-200);
+    background: var(--secondary-gradient);
+    color: var(--white);
+    border: 1px solid rgba(15, 52, 96, 0.3);
+    box-shadow: var(--shadow-md);
 }
 
 .btn-secondary:hover {
-    background: var(--gray-200);
-    transform: translateY(-1px);
+    background: var(--secondary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--accent);
 }
 
 .btn-outline {
     background: transparent;
-    color: var(--primary);
-    border: 2px solid var(--primary);
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    backdrop-filter: blur(10px);
 }
 
 .btn-outline:hover {
-    background: var(--primary);
+    background: var(--accent-gradient);
     color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--gold-shadow);
 }
 
 .btn-hero-primary {
@@ -181,26 +211,30 @@ p {
     color: var(--white);
     padding: var(--spacing-lg) var(--spacing-2xl);
     font-size: 1.1rem;
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--shadow-xl), var(--crimson-glow);
+    border: 2px solid rgba(233, 69, 96, 0.3);
 }
 
 .btn-hero-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-2xl);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-2xl), var(--crimson-glow);
+    border-color: var(--accent);
 }
 
 .btn-hero-secondary {
     background: transparent;
-    color: var(--primary);
-    border: 2px solid var(--primary);
+    color: var(--accent);
+    border: 2px solid var(--accent);
     padding: var(--spacing-lg) var(--spacing-2xl);
     font-size: 1.1rem;
+    backdrop-filter: blur(10px);
 }
 
 .btn-hero-secondary:hover {
-    background: var(--primary);
+    background: var(--accent-gradient);
     color: var(--white);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: var(--gold-shadow);
 }
 
 /* Landing Page Styles */
@@ -208,11 +242,12 @@ p {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(26, 26, 46, 0.95);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+    border-bottom: 1px solid rgba(233, 69, 96, 0.2);
     z-index: 1000;
     transition: all var(--transition-normal);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .nav-content {
@@ -228,10 +263,11 @@ p {
     gap: var(--spacing-sm);
     font-size: 1.5rem;
     font-weight: 800;
-    background: var(--primary-gradient);
+    background: var(--accent-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
 }
 
 .nav-links {
@@ -240,15 +276,16 @@ p {
 }
 
 .nav-links a {
-    color: var(--gray-600);
+    color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
-    transition: color var(--transition-normal);
+    transition: all var(--transition-normal);
     position: relative;
 }
 
 .nav-links a:hover {
-    color: var(--primary);
+    color: var(--accent);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .nav-links a::after {
@@ -258,9 +295,10 @@ p {
     height: 2px;
     bottom: -4px;
     left: 50%;
-    background: var(--primary-gradient);
+    background: var(--accent-gradient);
     transition: all var(--transition-normal);
     transform: translateX(-50%);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .nav-links a:hover::after {
