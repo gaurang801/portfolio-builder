@@ -1,26 +1,28 @@
-// Application State
+// Modern Portfolio Builder Pro
+
 let isLoggedIn = false;
 let currentUser = null;
+let currentStep = 'personal';
+let currentTemplate = 'template1';
+let portfolioData = {
+    personal: {},
+    experience: [],
+    projects: [],
+    skills: [],
+    education: []
+};
 
 // Landing Page Functions
 function showLoginModal() {
-    const modal = document.getElementById('loginModal');
-    modal.classList.add('active');
-    modal.style.display = 'flex';
+    document.getElementById('loginModal').style.display = 'flex';
 }
 
 function showSignupModal() {
-    const modal = document.getElementById('signupModal');
-    modal.classList.add('active');
-    modal.style.display = 'flex';
+    document.getElementById('signupModal').style.display = 'flex';
 }
 
 function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    modal.classList.remove('active');
-    setTimeout(() => {
-        modal.style.display = 'none';
-    }, 300);
+    document.getElementById(modalId).style.display = 'none';
 }
 
 function switchToSignup() {
@@ -34,100 +36,808 @@ function switchToLogin() {
 }
 
 function loginWith(provider) {
-    // Simulate social login - in real app, implement OAuth
     simulateLogin(provider);
 }
 
 function signupWith(provider) {
-    // Simulate social signup - in real app, implement OAuth
     simulateLogin(provider);
 }
 
 function simulateLogin(provider) {
-    // Show loading state
-    const modal = document.querySelector('.modal.active');
-    const button = modal.querySelector(`.${provider}-btn`);
-    const originalText = button.innerHTML;
-    
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
-    button.disabled = true;
-    
     setTimeout(() => {
         isLoggedIn = true;
-        currentUser = {
-            name: 'Demo User',
-            email: 'demo@example.com',
-            provider: provider
-        };
+        currentUser = { name: 'Demo User', email: 'demo@example.com' };
         
-        // Hide landing page, show app
         document.getElementById('landing-page').style.display = 'none';
         document.getElementById('portfolio-app').style.display = 'block';
-        
-        // Update user info
         document.getElementById('userName').textContent = currentUser.name;
         
-        // Close modal
-        closeModal(modal.id);
+        closeModal('loginModal');
+        closeModal('signupModal');
         
-        // Initialize portfolio builder
-        if (typeof portfolioBuilder === 'undefined') {
-            window.portfolioBuilder = new PortfolioBuilder();
-        }
-        
-        showNotification(`Welcome ${currentUser.name}! Logged in with ${provider.charAt(0).toUpperCase() + provider.slice(1)}`);
-    }, 2000);
+        initializePortfolioBuilder();
+        showNotification(`Welcome ${currentUser.name}!`);
+    }, 1000);
 }
 
 function scrollToSection(sectionId) {
     const element = document.getElementById(sectionId);
-    if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (element) element.scrollIntoView({ behavior: 'smooth' });
 }
 
 function toggleMobileMenu() {
-    // Mobile menu functionality
     const navLinks = document.querySelector('.nav-links');
     navLinks.classList.toggle('mobile-active');
 }
 
-// Smooth scrolling for navigation links
-document.addEventListener('DOMContentLoaded', function() {
-    // Add click handlers for navigation links
-    const navLinks = document.querySelectorAll('.nav-links a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            scrollToSection(targetId);
-        });
-    });
-    
-    // Handle auth form submissions
-    const authForms = document.querySelectorAll('.auth-form');
-    authForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Simulate form login/signup
-            simulateLogin('email');
-        });
-    });
-    
-    // Close modals when clicking outside
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => {
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeModal(modal.id);
-            }
-        });
-    });
-});
+// Portfolio Builder Functions
+function initializePortfolioBuilder() {
+    loadFromStorage();
+    bindEvents();
+    updateProgressBar();
+    renderCurrentStep();
+}
 
-// Show notification function
+function bindEvents() {
+    const navBtns = document.querySelectorAll('.nav-btn');
+    navBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            switchTab(e.target.closest('.nav-btn').dataset.tab);
+        });
+    });
+
+    const inputs = document.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+        input.addEventListener('input', autoSave);
+    });
+}
+
+function switchTab(tabName) {
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    document.getElementById(tabName).classList.add('active');
+
+    if (tabName === 'preview') updatePreview();
+}
+
+function nextStep() {
+    const steps = ['personal', 'experience', 'projects', 'skills', 'education'];
+    const currentIndex = steps.indexOf(currentStep);
+    
+    if (currentIndex < steps.length - 1) {
+        currentStep = steps[currentIndex + 1];
+        updateProgressBar();
+        renderCurrentStep();
+        scrollToTop();
+    }
+}
+
+function previousStep() {
+    const steps = ['personal', 'experience', 'projects', 'skills', 'education'];
+    const currentIndex = steps.indexOf(currentStep);
+    
+    if (currentIndex > 0) {
+        currentStep = steps[currentIndex - 1];
+        updateProgressBar();
+        renderCurrentStep();
+        scrollToTop();
+    }
+}
+
+function updateProgressBar() {
+    const steps = ['personal', 'experience', 'projects', 'skills', 'education'];
+    const currentIndex = steps.indexOf(currentStep);
+    
+    document.querySelectorAll('.progress-step').forEach((step, index) => {
+        step.classList.remove('active');
+        if (index <= currentIndex) step.classList.add('active');
+    });
+}
+
+function renderCurrentStep() {
+    document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
+    const currentSection = document.getElementById(`${currentStep}-form`);
+    if (currentSection) currentSection.classList.add('active');
+    
+    updateFormActions();
+}
+
+function updateFormActions() {
+    const steps = ['personal', 'experience', 'projects', 'skills', 'education'];
+    const currentIndex = steps.indexOf(currentStep);
+    
+    const prevBtn = document.querySelector('.form-actions .btn-secondary');
+    if (prevBtn) {
+        prevBtn.style.display = currentIndex === 0 ? 'none' : 'inline-flex';
+        if (currentIndex > 0) {
+            prevBtn.innerHTML = `<i class="fas fa-arrow-left"></i> Previous: ${steps[currentIndex - 1].charAt(0).toUpperCase() + steps[currentIndex - 1].slice(1)}`;
+        }
+    }
+    
+    const nextBtn = document.querySelector('.form-actions .btn-primary');
+    if (nextBtn) {
+        if (currentIndex === steps.length - 1) {
+            nextBtn.innerHTML = `<i class="fas fa-check"></i> Finish & Preview`;
+            nextBtn.onclick = finishBuilder;
+        } else {
+            nextBtn.innerHTML = `Next: ${steps[currentIndex + 1].charAt(0).toUpperCase() + steps[currentIndex + 1].slice(1)} <i class="fas fa-arrow-right"></i>`;
+            nextBtn.onclick = nextStep;
+        }
+    }
+}
+
+function finishBuilder() {
+    saveAllData();
+    switchTab('preview');
+    showNotification('Portfolio completed! Check out your preview.');
+}
+
+function saveAllData() {
+    savePersonalInfo();
+    saveExperience();
+    saveProjects();
+    saveSkills();
+    saveEducation();
+}
+
+function savePersonalInfo() {
+    const form = document.getElementById('personal-form');
+    const formData = new FormData(form);
+    
+    portfolioData.personal = {
+        fullName: formData.get('fullName') || '',
+        title: formData.get('title') || '',
+        email: formData.get('email') || '',
+        phone: formData.get('phone') || '',
+        location: formData.get('location') || '',
+        bio: formData.get('bio') || '',
+        linkedin: formData.get('linkedin') || '',
+        github: formData.get('github') || ''
+    };
+    
+    saveToStorage();
+}
+
+function saveExperience() {
+    const experienceItems = document.querySelectorAll('.experience-item');
+    portfolioData.experience = [];
+    
+    experienceItems.forEach(item => {
+        const experience = {
+            id: item.dataset.id,
+            jobTitle: item.querySelector('[name="jobTitle"]').value,
+            company: item.querySelector('[name="company"]').value,
+            startDate: item.querySelector('[name="startDate"]').value,
+            endDate: item.querySelector('[name="endDate"]').value,
+            description: item.querySelector('[name="jobDescription"]').value,
+            current: item.querySelector('[name="currentJob"]').checked
+        };
+        portfolioData.experience.push(experience);
+    });
+    
+    saveToStorage();
+}
+
+function saveProjects() {
+    const projectItems = document.querySelectorAll('.project-item');
+    portfolioData.projects = [];
+    
+    projectItems.forEach(item => {
+        const project = {
+            id: item.dataset.id,
+            name: item.querySelector('[name="projectName"]').value,
+            description: item.querySelector('[name="projectDescription"]').value,
+            technologies: item.querySelector('[name="technologies"]').value,
+            liveUrl: item.querySelector('[name="projectUrl"]').value,
+            repoUrl: item.querySelector('[name="repositoryUrl"]').value
+        };
+        portfolioData.projects.push(project);
+    });
+    
+    saveToStorage();
+}
+
+function saveSkills() {
+    const skillItems = document.querySelectorAll('.skill-item');
+    portfolioData.skills = [];
+    
+    skillItems.forEach(item => {
+        const skill = {
+            id: item.dataset.id,
+            name: item.querySelector('[name="skillName"]').value,
+            level: item.querySelector('[name="skillLevel"]').value
+        };
+        portfolioData.skills.push(skill);
+    });
+    
+    saveToStorage();
+}
+
+function saveEducation() {
+    const educationItems = document.querySelectorAll('.education-item');
+    portfolioData.education = [];
+    
+    educationItems.forEach(item => {
+        const education = {
+            id: item.dataset.id,
+            degree: item.querySelector('[name="degree"]').value,
+            field: item.querySelector('[name="field"]').value,
+            school: item.querySelector('[name="school"]').value,
+            graduationYear: item.querySelector('[name="graduationYear"]').value,
+            gpa: item.querySelector('[name="gpa"]').value
+        };
+        portfolioData.education.push(education);
+    });
+    
+    saveToStorage();
+}
+
+function addExperienceForm() {
+    const experienceList = document.getElementById('experienceList');
+    const experienceId = Date.now();
+    
+    const experienceHtml = `
+        <div class="experience-item" data-id="${experienceId}">
+            <div class="item-header">
+                <h4>Experience Entry</h4>
+                <button type="button" class="btn-remove" onclick="removeItem(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="jobTitle_${experienceId}">Job Title</label>
+                    <input type="text" name="jobTitle" id="jobTitle_${experienceId}" placeholder="Senior Developer">
+                </div>
+                <div class="form-group">
+                    <label for="company_${experienceId}">Company</label>
+                    <input type="text" name="company" id="company_${experienceId}" placeholder="Tech Corp">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="startDate_${experienceId}">Start Date</label>
+                    <input type="month" name="startDate" id="startDate_${experienceId}">
+                </div>
+                <div class="form-group">
+                    <label for="endDate_${experienceId}">End Date</label>
+                    <input type="month" name="endDate" id="endDate_${experienceId}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="currentJob" id="currentJob_${experienceId}" onchange="toggleEndDate(this)">
+                    Currently working here
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="jobDescription_${experienceId}">Description</label>
+                <textarea name="jobDescription" id="jobDescription_${experienceId}" rows="4" placeholder="Describe your responsibilities and achievements..."></textarea>
+            </div>
+        </div>
+    `;
+    
+    experienceList.insertAdjacentHTML('beforeend', experienceHtml);
+}
+
+function addProjectForm() {
+    const projectsList = document.getElementById('projectsList');
+    const projectId = Date.now();
+    
+    const projectHtml = `
+        <div class="project-item" data-id="${projectId}">
+            <div class="item-header">
+                <h4>Project Entry</h4>
+                <button type="button" class="btn-remove" onclick="removeItem(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="form-group">
+                <label for="projectName_${projectId}">Project Name</label>
+                <input type="text" name="projectName" id="projectName_${projectId}" placeholder="Amazing Web App">
+            </div>
+            <div class="form-group">
+                <label for="projectDescription_${projectId}">Description</label>
+                <textarea name="projectDescription" id="projectDescription_${projectId}" rows="3" placeholder="Describe what this project does..."></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="technologies_${projectId}">Technologies Used</label>
+                    <input type="text" name="technologies" id="technologies_${projectId}" placeholder="React, Node.js, MongoDB">
+                </div>
+                <div class="form-group">
+                    <label for="projectUrl_${projectId}">Live Demo URL</label>
+                    <input type="url" name="projectUrl" id="projectUrl_${projectId}" placeholder="https://myproject.com">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="repositoryUrl_${projectId}">Repository URL</label>
+                <input type="url" name="repositoryUrl" id="repositoryUrl_${projectId}" placeholder="https://github.com/user/project">
+            </div>
+        </div>
+    `;
+    
+    projectsList.insertAdjacentHTML('beforeend', projectHtml);
+}
+
+function addSkillForm() {
+    const skillsList = document.getElementById('skillsList');
+    const skillId = Date.now();
+    
+    const skillHtml = `
+        <div class="skill-item" data-id="${skillId}">
+            <div class="item-header">
+                <h4>Skill Entry</h4>
+                <button type="button" class="btn-remove" onclick="removeItem(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="skillName_${skillId}">Skill Name</label>
+                    <input type="text" name="skillName" id="skillName_${skillId}" placeholder="JavaScript">
+                </div>
+                <div class="form-group">
+                    <label for="skillLevel_${skillId}">Proficiency Level</label>
+                    <select name="skillLevel" id="skillLevel_${skillId}">
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="expert">Expert</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    skillsList.insertAdjacentHTML('beforeend', skillHtml);
+}
+
+function addEducationForm() {
+    const educationList = document.getElementById('educationList');
+    const educationId = Date.now();
+    
+    const educationHtml = `
+        <div class="education-item" data-id="${educationId}">
+            <div class="item-header">
+                <h4>Education Entry</h4>
+                <button type="button" class="btn-remove" onclick="removeItem(this)">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="degree_${educationId}">Degree</label>
+                    <input type="text" name="degree" id="degree_${educationId}" placeholder="Bachelor of Science">
+                </div>
+                <div class="form-group">
+                    <label for="field_${educationId}">Field of Study</label>
+                    <input type="text" name="field" id="field_${educationId}" placeholder="Computer Science">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="school_${educationId}">School/University</label>
+                    <input type="text" name="school" id="school_${educationId}" placeholder="University of Technology">
+                </div>
+                <div class="form-group">
+                    <label for="graduationYear_${educationId}">Graduation Year</label>
+                    <input type="number" name="graduationYear" id="graduationYear_${educationId}" placeholder="2023">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="gpa_${educationId}">GPA (optional)</label>
+                <input type="text" name="gpa" id="gpa_${educationId}" placeholder="3.8/4.0">
+            </div>
+        </div>
+    `;
+    
+    educationList.insertAdjacentHTML('beforeend', educationHtml);
+}
+
+function removeItem(button) {
+    const item = button.closest('.experience-item, .project-item, .skill-item, .education-item');
+    item.remove();
+    autoSave();
+}
+
+function toggleEndDate(checkbox) {
+    const endDateInput = checkbox.closest('.experience-item').querySelector('[name="endDate"]');
+    if (checkbox.checked) {
+        endDateInput.disabled = true;
+        endDateInput.value = '';
+    } else {
+        endDateInput.disabled = false;
+    }
+}
+
+function autoSave() {
+    saveAllData();
+}
+
+function saveToStorage() {
+    localStorage.setItem('portfolioData', JSON.stringify(portfolioData));
+}
+
+function loadFromStorage() {
+    const saved = localStorage.getItem('portfolioData');
+    if (saved) {
+        portfolioData = JSON.parse(saved);
+        populateForms();
+    }
+}
+
+function populateForms() {
+    if (portfolioData.personal) {
+        Object.keys(portfolioData.personal).forEach(key => {
+            const input = document.getElementById(key);
+            if (input) input.value = portfolioData.personal[key];
+        });
+    }
+    
+    populateExperience();
+    populateProjects();
+    populateSkills();
+    populateEducation();
+}
+
+function populateExperience() {
+    const experienceList = document.getElementById('experienceList');
+    experienceList.innerHTML = '';
+    
+    portfolioData.experience.forEach(exp => {
+        addExperienceForm();
+        const lastItem = experienceList.lastElementChild;
+        lastItem.dataset.id = exp.id;
+        
+        lastItem.querySelector('[name="jobTitle"]').value = exp.jobTitle || '';
+        lastItem.querySelector('[name="company"]').value = exp.company || '';
+        lastItem.querySelector('[name="startDate"]').value = exp.startDate || '';
+        lastItem.querySelector('[name="endDate"]').value = exp.endDate || '';
+        lastItem.querySelector('[name="jobDescription"]').value = exp.description || '';
+        
+        const currentCheckbox = lastItem.querySelector('[name="currentJob"]');
+        currentCheckbox.checked = exp.current || false;
+        toggleEndDate(currentCheckbox);
+    });
+}
+
+function populateProjects() {
+    const projectsList = document.getElementById('projectsList');
+    projectsList.innerHTML = '';
+    
+    portfolioData.projects.forEach(project => {
+        addProjectForm();
+        const lastItem = projectsList.lastElementChild;
+        lastItem.dataset.id = project.id;
+        
+        lastItem.querySelector('[name="projectName"]').value = project.name || '';
+        lastItem.querySelector('[name="projectDescription"]').value = project.description || '';
+        lastItem.querySelector('[name="technologies"]').value = project.technologies || '';
+        lastItem.querySelector('[name="projectUrl"]').value = project.liveUrl || '';
+        lastItem.querySelector('[name="repositoryUrl"]').value = project.repoUrl || '';
+    });
+}
+
+function populateSkills() {
+    const skillsList = document.getElementById('skillsList');
+    skillsList.innerHTML = '';
+    
+    portfolioData.skills.forEach(skill => {
+        addSkillForm();
+        const lastItem = skillsList.lastElementChild;
+        lastItem.dataset.id = skill.id;
+        
+        lastItem.querySelector('[name="skillName"]').value = skill.name || '';
+        lastItem.querySelector('[name="skillLevel"]').value = skill.level || 'beginner';
+    });
+}
+
+function populateEducation() {
+    const educationList = document.getElementById('educationList');
+    educationList.innerHTML = '';
+    
+    portfolioData.education.forEach(education => {
+        addEducationForm();
+        const lastItem = educationList.lastElementChild;
+        lastItem.dataset.id = education.id;
+        
+        lastItem.querySelector('[name="degree"]').value = education.degree || '';
+        lastItem.querySelector('[name="field"]').value = education.field || '';
+        lastItem.querySelector('[name="school"]').value = education.school || '';
+        lastItem.querySelector('[name="graduationYear"]').value = education.graduationYear || '';
+        lastItem.querySelector('[name="gpa"]').value = education.gpa || '';
+    });
+}
+
+// Template Functions
+function selectTemplate(templateName) {
+    currentTemplate = templateName;
+    updatePreview();
+    showNotification(`Template "${templateName}" selected!`);
+}
+
+function changeTemplate() {
+    const selector = document.getElementById('templateSelector');
+    currentTemplate = selector.value;
+    updatePreview();
+}
+
+// Preview Functions
+function updatePreview() {
+    const previewContainer = document.getElementById('portfolioPreview');
+    if (!previewContainer) return;
+    
+    const template = currentTemplate || 'template1';
+    const previewHtml = generatePreviewHTML(template);
+    previewContainer.innerHTML = previewHtml;
+}
+
+function generatePreviewHTML(template) {
+    const data = portfolioData;
+    
+    switch (template) {
+        case 'template1':
+            return generateTemplate1HTML(data);
+        case 'template2':
+            return generateTemplate2HTML(data);
+        case 'template3':
+            return generateTemplate3HTML(data);
+        default:
+            return generateTemplate1HTML(data);
+    }
+}
+
+function generateTemplate1HTML(data) {
+    return `
+        <div class="template1-preview">
+            <div class="preview-header">
+                <h1>${data.personal.fullName || 'Your Name'}</h1>
+                <p class="title">${data.personal.title || 'Professional Title'}</p>
+                <p class="bio">${data.personal.bio || 'Your professional bio will appear here...'}</p>
+                <div class="contact-info">
+                    ${data.personal.email ? `<span><i class="fas fa-envelope"></i> ${data.personal.email}</span>` : ''}
+                    ${data.personal.phone ? `<span><i class="fas fa-phone"></i> ${data.personal.phone}</span>` : ''}
+                    ${data.personal.location ? `<span><i class="fas fa-map-marker-alt"></i> ${data.personal.location}</span>` : ''}
+                </div>
+            </div>
+            
+            ${data.experience.length > 0 ? `
+            <div class="preview-section">
+                <h2><i class="fas fa-briefcase"></i> Experience</h2>
+                ${data.experience.map(exp => `
+                    <div class="experience-item">
+                        <h3>${exp.jobTitle}</h3>
+                        <p class="company">${exp.company}</p>
+                        <p class="period">${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}</p>
+                        <p class="description">${exp.description}</p>
+                    </div>
+                `).join('')}
+            </div>
+            ` : ''}
+            
+            ${data.projects.length > 0 ? `
+            <div class="preview-section">
+                <h2><i class="fas fa-code"></i> Projects</h2>
+                ${data.projects.map(project => `
+                    <div class="project-item">
+                        <h3>${project.name}</h3>
+                        <p class="description">${project.description}</p>
+                        <p class="technologies"><strong>Technologies:</strong> ${project.technologies}</p>
+                    </div>
+                `).join('')}
+            </div>
+            ` : ''}
+            
+            ${data.skills.length > 0 ? `
+            <div class="preview-section">
+                <h2><i class="fas fa-cogs"></i> Skills</h2>
+                <div class="skills-grid">
+                    ${data.skills.map(skill => `
+                        <div class="skill-item ${skill.level}">
+                            <span class="skill-name">${skill.name}</span>
+                            <span class="skill-level">${skill.level}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            ` : ''}
+            
+            ${data.education.length > 0 ? `
+            <div class="preview-section">
+                <h2><i class="fas fa-graduation-cap"></i> Education</h2>
+                ${data.education.map(edu => `
+                    <div class="education-item">
+                        <h3>${edu.degree} in ${edu.field}</h3>
+                        <p class="school">${edu.school}</p>
+                        <p class="year">${edu.graduationYear}</p>
+                        ${edu.gpa ? `<p class="gpa">GPA: ${edu.gpa}</p>` : ''}
+                    </div>
+                `).join('')}
+            </div>
+            ` : ''}
+        </div>
+    `;
+}
+
+function generateTemplate2HTML(data) {
+    return `
+        <div class="template2-preview">
+            <div class="sidebar">
+                <div class="profile">
+                    <div class="avatar"></div>
+                    <h1>${data.personal.fullName || 'Your Name'}</h1>
+                    <p class="title">${data.personal.title || 'Professional Title'}</p>
+                    <p class="bio">${data.personal.bio || 'Your professional bio will appear here...'}</p>
+                </div>
+                <div class="contact">
+                    <h3>Contact</h3>
+                    ${data.personal.email ? `<p><i class="fas fa-envelope"></i> ${data.personal.email}</p>` : ''}
+                    ${data.personal.phone ? `<p><i class="fas fa-phone"></i> ${data.personal.phone}</p>` : ''}
+                    ${data.personal.location ? `<p><i class="fas fa-map-marker-alt"></i> ${data.personal.location}</p>` : ''}
+                </div>
+            </div>
+            <div class="main-content">
+                ${data.experience.length > 0 ? `
+                <section>
+                    <h2>Experience</h2>
+                    ${data.experience.map(exp => `
+                        <div class="experience-item">
+                            <h3>${exp.jobTitle}</h3>
+                            <p class="company">${exp.company}</p>
+                            <p class="period">${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}</p>
+                            <p class="description">${exp.description}</p>
+                        </div>
+                    `).join('')}
+                </section>
+                ` : ''}
+                
+                ${data.projects.length > 0 ? `
+                <section>
+                    <h2>Projects</h2>
+                    ${data.projects.map(project => `
+                        <div class="project-item">
+                            <h3>${project.name}</h3>
+                            <p class="description">${project.description}</p>
+                            <p class="technologies"><strong>Technologies:</strong> ${project.technologies}</p>
+                        </div>
+                    `).join('')}
+                </section>
+                ` : ''}
+            </div>
+        </div>
+    `;
+}
+
+function generateTemplate3HTML(data) {
+    return `
+        <div class="template3-preview">
+            <div class="hero-section">
+                <h1>${data.personal.fullName || 'Your Name'}</h1>
+                <p class="title">${data.personal.title || 'Professional Title'}</p>
+                <p class="bio">${data.personal.bio || 'Your professional bio will appear here...'}</p>
+            </div>
+            
+            <div class="grid-sections">
+                ${data.experience.length > 0 ? `
+                <div class="grid-item experience">
+                    <h2>Experience</h2>
+                    ${data.experience.map(exp => `
+                        <div class="item">
+                            <h3>${exp.jobTitle}</h3>
+                            <p>${exp.company}</p>
+                        </div>
+                    `).join('')}
+                </div>
+                ` : ''}
+                
+                ${data.projects.length > 0 ? `
+                <div class="grid-item projects">
+                    <h2>Projects</h2>
+                    ${data.projects.map(project => `
+                        <div class="item">
+                            <h3>${project.name}</h3>
+                            <p>${project.technologies}</p>
+                        </div>
+                    `).join('')}
+                </div>
+                ` : ''}
+                
+                ${data.skills.length > 0 ? `
+                <div class="grid-item skills">
+                    <h2>Skills</h2>
+                    <div class="skills-list">
+                        ${data.skills.map(skill => `
+                            <span class="skill ${skill.level}">${skill.name}</span>
+                        `).join('')}
+                    </div>
+                </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+}
+
+// Export Functions
+function downloadPDF() {
+    const element = document.getElementById('portfolioPreview');
+    if (!element) {
+        showNotification('No portfolio content to export', 'error');
+        return;
+    }
+    
+    if (typeof html2pdf !== 'undefined') {
+        const opt = {
+            margin: 1,
+            filename: 'portfolio.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+        
+        html2pdf().set(opt).from(element).save();
+    } else {
+        showNotification('PDF export library not loaded', 'error');
+    }
+}
+
+function downloadPNG() {
+    const element = document.getElementById('portfolioPreview');
+    if (!element) {
+        showNotification('No portfolio content to export', 'error');
+        return;
+    }
+    
+    if (typeof html2canvas !== 'undefined') {
+        html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'portfolio.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+    } else {
+        showNotification('PNG export library not loaded', 'error');
+    }
+}
+
+function sharePortfolio() {
+    const shareUrl = `${window.location.origin}${window.location.pathname}?portfolio=${btoa(JSON.stringify(portfolioData))}`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'My Portfolio',
+            text: 'Check out my professional portfolio!',
+            url: shareUrl
+        });
+    } else {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            showNotification('Portfolio link copied to clipboard!');
+        });
+    }
+}
+
+// Utility Functions
+function goBack() {
+    document.getElementById('portfolio-app').style.display = 'none';
+    document.getElementById('landing-page').style.display = 'block';
+}
+
+function showUserMenu() {
+    const userBtn = document.querySelector('.user-btn');
+    userBtn.classList.toggle('active');
+}
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function showNotification(message, type = 'success') {
-    // Remove existing notifications
     const existing = document.querySelector('.notification');
     if (existing) existing.remove();
 
@@ -138,7 +848,6 @@ function showNotification(message, type = 'success') {
         <span>${message}</span>
     `;
 
-    // Add styles
     notification.style.cssText = `
         position: fixed;
         top: 20px;
@@ -163,720 +872,40 @@ function showNotification(message, type = 'success') {
     }, 4000);
 }
 
-// Portfolio Builder Application
-class PortfolioBuilder {
-    constructor() {
-        this.portfolioData = {
-            personal: {},
-            experience: [],
-            projects: [],
-            skills: [],
-            education: []
-        };
-        this.currentTemplate = 'modern';
-        this.init();
-    }
-
-    init() {
-        this.loadFromStorage();
-        this.bindEvents();
-        this.updatePreview();
-    }
-
-    // Event Listeners
-    bindEvents() {
-        // Navigation
-        const navBtns = document.querySelectorAll('.nav-btn');
-        navBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                this.switchTab(e.target.closest('.nav-btn').dataset.tab);
-            });
+// Event Listeners
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('.nav-links a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            scrollToSection(targetId);
         });
-
-        // Category switching
-        const categories = document.querySelectorAll('.category');
-        categories.forEach(category => {
-            category.addEventListener('click', (e) => {
-                this.switchCategory(e.target.closest('.category').dataset.category);
-            });
+    });
+    
+    const authForms = document.querySelectorAll('.auth-form');
+    authForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            simulateLogin('email');
         });
-
-        // Form auto-save
-        const inputs = document.querySelectorAll('input, textarea, select');
-        inputs.forEach(input => {
-            input.addEventListener('input', () => {
-                this.autoSave();
-            });
-        });
-
-        // Current job checkbox
-        const currentJobCheckbox = document.getElementById('currentJob');
-        if (currentJobCheckbox) {
-            currentJobCheckbox.addEventListener('change', (e) => {
-                const endDateInput = document.getElementById('endDate');
-                if (e.target.checked) {
-                    endDateInput.disabled = true;
-                    endDateInput.value = '';
-                } else {
-                    endDateInput.disabled = false;
-                }
-            });
-        }
-    }
-
-    // Tab Management
-    switchTab(tabName) {
-        // Update nav buttons
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-
-        // Show/hide content
-        document.querySelectorAll('.tab-content, .welcome-section').forEach(content => {
-            content.classList.remove('active');
-        });
-        
-        if (tabName === 'welcome') {
-            document.getElementById('welcome').classList.add('active');
-        } else {
-            document.getElementById(tabName).classList.add('active');
-        }
-
-        // Update preview when switching to preview tab
-        if (tabName === 'preview') {
-            this.updatePreview();
-        }
-    }
-
-    switchCategory(categoryName) {
-        // Update category buttons
-        document.querySelectorAll('.category').forEach(cat => {
-            cat.classList.remove('active');
-        });
-        document.querySelector(`[data-category="${categoryName}"]`).classList.add('active');
-
-        // Show/hide forms
-        document.querySelectorAll('.section-form').forEach(form => {
-            form.classList.remove('active');
-        });
-        document.getElementById(`${categoryName}-form`).classList.add('active');
-    }
-
-    // Data Management
-    savePersonalInfo() {
-        const form = document.getElementById('personal-form');
-        const formData = new FormData(form);
-        
-        this.portfolioData.personal = {
-            fullName: formData.get('fullName') || '',
-            title: formData.get('title') || '',
-            email: formData.get('email') || '',
-            phone: formData.get('phone') || '',
-            location: formData.get('location') || '',
-            bio: formData.get('bio') || '',
-            linkedin: formData.get('linkedin') || '',
-            github: formData.get('github') || ''
-        };
-
-        this.saveToStorage();
-        this.updateSections();
-        this.showNotification('Personal information saved!');
-    }
-
-    addExperience() {
-        const form = document.getElementById('experience-form');
-        const formData = new FormData(form);
-        
-        const experience = {
-            id: Date.now(),
-            jobTitle: formData.get('jobTitle') || '',
-            company: formData.get('company') || '',
-            startDate: formData.get('startDate') || '',
-            endDate: formData.get('currentJob') ? 'Present' : (formData.get('endDate') || ''),
-            description: formData.get('jobDescription') || '',
-            current: formData.get('currentJob') === 'on'
-        };
-
-        if (experience.jobTitle && experience.company) {
-            this.portfolioData.experience.push(experience);
-            this.saveToStorage();
-            this.updateSections();
-            form.reset();
-            this.showNotification('Experience added!');
-        } else {
-            this.showNotification('Please fill in required fields', 'error');
-        }
-    }
-
-    addProject() {
-        const form = document.getElementById('projects-form');
-        const formData = new FormData(form);
-        
-        const project = {
-            id: Date.now(),
-            name: formData.get('projectName') || '',
-            description: formData.get('projectDescription') || '',
-            technologies: formData.get('technologies') || '',
-            url: formData.get('projectUrl') || '',
-            repository: formData.get('repositoryUrl') || ''
-        };
-
-        if (project.name && project.description) {
-            this.portfolioData.projects.push(project);
-            this.saveToStorage();
-            this.updateSections();
-            form.reset();
-            this.showNotification('Project added!');
-        } else {
-            this.showNotification('Please fill in required fields', 'error');
-        }
-    }
-
-    addSkill() {
-        const form = document.getElementById('skills-form');
-        const formData = new FormData(form);
-        
-        const skill = {
-            id: Date.now(),
-            name: formData.get('skillName') || '',
-            level: formData.get('skillLevel') || 'beginner'
-        };
-
-        if (skill.name) {
-            this.portfolioData.skills.push(skill);
-            this.saveToStorage();
-            this.updateSections();
-            form.reset();
-            this.showNotification('Skill added!');
-        } else {
-            this.showNotification('Please enter a skill name', 'error');
-        }
-    }
-
-    addEducation() {
-        const form = document.getElementById('education-form');
-        const formData = new FormData(form);
-        
-        const education = {
-            id: Date.now(),
-            degree: formData.get('degree') || '',
-            field: formData.get('field') || '',
-            school: formData.get('school') || '',
-            year: formData.get('graduationYear') || '',
-            gpa: formData.get('gpa') || ''
-        };
-
-        if (education.degree && education.school) {
-            this.portfolioData.education.push(education);
-            this.saveToStorage();
-            this.updateSections();
-            form.reset();
-            this.showNotification('Education added!');
-        } else {
-            this.showNotification('Please fill in required fields', 'error');
-        }
-    }
-
-    removeSection(type, id) {
-        this.portfolioData[type] = this.portfolioData[type].filter(item => item.id !== parseInt(id));
-        this.saveToStorage();
-        this.updateSections();
-        this.showNotification('Item removed!');
-    }
-
-    clearAll() {
-        if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
-            this.portfolioData = {
-                personal: {},
-                experience: [],
-                projects: [],
-                skills: [],
-                education: []
-            };
-            this.saveToStorage();
-            this.updateSections();
-            this.clearForms();
-            this.showNotification('All data cleared!');
-        }
-    }
-
-    clearForms() {
-        document.querySelectorAll('form').forEach(form => form.reset());
-    }
-
-    // UI Updates
-    updateSections() {
-        const container = document.getElementById('portfolioSections');
-        const sections = [];
-
-        // Personal Info
-        if (Object.keys(this.portfolioData.personal).length > 0 && this.portfolioData.personal.fullName) {
-            sections.push(this.createPersonalSection(this.portfolioData.personal));
-        }
-
-        // Experience
-        this.portfolioData.experience.forEach(exp => {
-            sections.push(this.createExperienceSection(exp));
-        });
-
-        // Projects
-        this.portfolioData.projects.forEach(project => {
-            sections.push(this.createProjectSection(project));
-        });
-
-        // Skills
-        if (this.portfolioData.skills.length > 0) {
-            sections.push(this.createSkillsSection(this.portfolioData.skills));
-        }
-
-        // Education
-        this.portfolioData.education.forEach(edu => {
-            sections.push(this.createEducationSection(edu));
-        });
-
-        if (sections.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-plus-circle"></i>
-                    <h4>Start building your portfolio</h4>
-                    <p>Add sections from the sidebar to build your professional portfolio</p>
-                </div>
-            `;
-        } else {
-            container.innerHTML = sections.join('');
-        }
-    }
-
-    createPersonalSection(personal) {
-        return `
-            <div class="portfolio-section fade-in">
-                <div class="section-actions">
-                    <button onclick="portfolioBuilder.clearPersonal()" title="Remove">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-                <h4><i class="fas fa-user"></i> Personal Information</h4>
-                <div class="personal-info">
-                    <p><strong>${personal.fullName}</strong></p>
-                    <p>${personal.title}</p>
-                    ${personal.email ? `<p><i class="fas fa-envelope"></i> ${personal.email}</p>` : ''}
-                    ${personal.phone ? `<p><i class="fas fa-phone"></i> ${personal.phone}</p>` : ''}
-                    ${personal.location ? `<p><i class="fas fa-map-marker-alt"></i> ${personal.location}</p>` : ''}
-                    ${personal.bio ? `<p style="margin-top: 1rem;">${personal.bio}</p>` : ''}
-                </div>
-            </div>
-        `;
-    }
-
-    createExperienceSection(exp) {
-        const startDate = exp.startDate ? new Date(exp.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : '';
-        const endDate = exp.endDate === 'Present' ? 'Present' : (exp.endDate ? new Date(exp.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : '');
-        
-        return `
-            <div class="portfolio-section fade-in">
-                <div class="section-actions">
-                    <button onclick="portfolioBuilder.removeSection('experience', ${exp.id})" title="Remove">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-                <h4><i class="fas fa-briefcase"></i> ${exp.jobTitle}</h4>
-                <div class="experience-info">
-                    <p><strong>${exp.company}</strong></p>
-                    ${startDate || endDate ? `<p><i class="fas fa-calendar"></i> ${startDate} - ${endDate}</p>` : ''}
-                    ${exp.description ? `<p style="margin-top: 1rem;">${exp.description}</p>` : ''}
-                </div>
-            </div>
-        `;
-    }
-
-    createProjectSection(project) {
-        return `
-            <div class="portfolio-section fade-in">
-                <div class="section-actions">
-                    <button onclick="portfolioBuilder.removeSection('projects', ${project.id})" title="Remove">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-                <h4><i class="fas fa-code"></i> ${project.name}</h4>
-                <div class="project-info">
-                    <p>${project.description}</p>
-                    ${project.technologies ? `<p><strong>Technologies:</strong> ${project.technologies}</p>` : ''}
-                    <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-                        ${project.url ? `<a href="${project.url}" target="_blank" style="color: #2b6cb0; text-decoration: none;"><i class="fas fa-external-link-alt"></i> Live Demo</a>` : ''}
-                        ${project.repository ? `<a href="${project.repository}" target="_blank" style="color: #2b6cb0; text-decoration: none;"><i class="fab fa-github"></i> Repository</a>` : ''}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    createSkillsSection(skills) {
-        const skillsHTML = skills.map(skill => `
-            <span class="skill-tag" data-level="${skill.level}">
-                ${skill.name}
-                <button onclick="portfolioBuilder.removeSection('skills', ${skill.id})" class="remove-skill">
-                    <i class="fas fa-times"></i>
-                </button>
-            </span>
-        `).join('');
-
-        return `
-            <div class="portfolio-section fade-in">
-                <h4><i class="fas fa-cogs"></i> Skills</h4>
-                <div class="skills-container">
-                    ${skillsHTML}
-                </div>
-                <style>
-                    .skills-container { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
-                    .skill-tag { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #eff6ff; color: #2b6cb0; border-radius: 20px; font-size: 0.875rem; font-weight: 500; }
-                    .skill-tag[data-level="expert"] { background: #dcfce7; color: #166534; }
-                    .skill-tag[data-level="advanced"] { background: #fef3c7; color: #92400e; }
-                    .skill-tag[data-level="intermediate"] { background: #dbeafe; color: #1e40af; }
-                    .remove-skill { background: none; border: none; color: inherit; cursor: pointer; opacity: 0.7; }
-                    .remove-skill:hover { opacity: 1; }
-                </style>
-            </div>
-        `;
-    }
-
-    createEducationSection(edu) {
-        return `
-            <div class="portfolio-section fade-in">
-                <div class="section-actions">
-                    <button onclick="portfolioBuilder.removeSection('education', ${edu.id})" title="Remove">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-                <h4><i class="fas fa-graduation-cap"></i> ${edu.degree}</h4>
-                <div class="education-info">
-                    <p><strong>${edu.school}</strong></p>
-                    ${edu.field ? `<p>${edu.field}</p>` : ''}
-                    <div style="display: flex; gap: 2rem; margin-top: 0.5rem;">
-                        ${edu.year ? `<p><i class="fas fa-calendar"></i> ${edu.year}</p>` : ''}
-                        ${edu.gpa ? `<p><i class="fas fa-star"></i> GPA: ${edu.gpa}</p>` : ''}
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    clearPersonal() {
-        if (confirm('Remove personal information?')) {
-            this.portfolioData.personal = {};
-            this.saveToStorage();
-            this.updateSections();
-            document.getElementById('personal-form').reset();
-            this.showNotification('Personal information removed!');
-        }
-    }
-
-    // Preview Management
-    updatePreview() {
-        const preview = document.getElementById('portfolioPreview');
-        
-        if (this.hasContent()) {
-            preview.innerHTML = this.generatePreviewHTML();
-            preview.className = `portfolio-preview ${this.currentTemplate}-template`;
-        } else {
-            preview.innerHTML = `
-                <div class="preview-placeholder">
-                    <i class="fas fa-eye"></i>
-                    <h4>No content to preview</h4>
-                    <p>Add some content in the builder to see your portfolio here</p>
-                </div>
-            `;
-        }
-    }
-
-    hasContent() {
-        return Object.keys(this.portfolioData.personal).length > 0 ||
-               this.portfolioData.experience.length > 0 ||
-               this.portfolioData.projects.length > 0 ||
-               this.portfolioData.skills.length > 0 ||
-               this.portfolioData.education.length > 0;
-    }
-
-    generatePreviewHTML() {
-        let html = '';
-        
-        // Header
-        if (this.portfolioData.personal.fullName) {
-            html += `
-                <div class="portfolio-header">
-                    <h1>${this.portfolioData.personal.fullName}</h1>
-                    ${this.portfolioData.personal.title ? `<p>${this.portfolioData.personal.title}</p>` : ''}
-                    ${this.portfolioData.personal.bio ? `<p style="margin-top: 1rem; opacity: 0.9;">${this.portfolioData.personal.bio}</p>` : ''}
-                    <div class="contact-links" style="margin-top: 1.5rem;">
-                        ${this.portfolioData.personal.email ? `<a href="mailto:${this.portfolioData.personal.email}"><i class="fas fa-envelope"></i> ${this.portfolioData.personal.email}</a>` : ''}
-                        ${this.portfolioData.personal.phone ? `<a href="tel:${this.portfolioData.personal.phone}"><i class="fas fa-phone"></i> ${this.portfolioData.personal.phone}</a>` : ''}
-                        ${this.portfolioData.personal.location ? `<span><i class="fas fa-map-marker-alt"></i> ${this.portfolioData.personal.location}</span>` : ''}
-                        ${this.portfolioData.personal.linkedin ? `<a href="${this.portfolioData.personal.linkedin}" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>` : ''}
-                        ${this.portfolioData.personal.github ? `<a href="${this.portfolioData.personal.github}" target="_blank"><i class="fab fa-github"></i> GitHub</a>` : ''}
-                    </div>
-                </div>
-            `;
-        }
-
-        html += '<div class="portfolio-content">';
-
-        // Experience
-        if (this.portfolioData.experience.length > 0) {
-            html += `
-                <div class="section">
-                    <h2><i class="fas fa-briefcase"></i> Experience</h2>
-                    ${this.portfolioData.experience.map(exp => {
-                        const startDate = exp.startDate ? new Date(exp.startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : '';
-                        const endDate = exp.endDate === 'Present' ? 'Present' : (exp.endDate ? new Date(exp.endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' }) : '');
-                        
-                        return `
-                            <div style="margin-bottom: 2rem;">
-                                <h3 style="color: #1a202c; margin-bottom: 0.5rem;">${exp.jobTitle}</h3>
-                                <p style="color: #2b6cb0; font-weight: 600; margin-bottom: 0.25rem;">${exp.company}</p>
-                                ${startDate || endDate ? `<p style="color: #64748b; font-size: 0.875rem; margin-bottom: 1rem;"><i class="fas fa-calendar"></i> ${startDate} - ${endDate}</p>` : ''}
-                                ${exp.description ? `<p style="line-height: 1.6;">${exp.description}</p>` : ''}
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-            `;
-        }
-
-        // Projects
-        if (this.portfolioData.projects.length > 0) {
-            html += `
-                <div class="section">
-                    <h2><i class="fas fa-code"></i> Projects</h2>
-                    <div style="display: grid; gap: 2rem;">
-                        ${this.portfolioData.projects.map(project => `
-                            <div style="border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem;">
-                                <h3 style="color: #1a202c; margin-bottom: 1rem;">${project.name}</h3>
-                                <p style="margin-bottom: 1rem; line-height: 1.6;">${project.description}</p>
-                                ${project.technologies ? `<p style="margin-bottom: 1rem;"><strong>Technologies:</strong> ${project.technologies}</p>` : ''}
-                                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                                    ${project.url ? `<a href="${project.url}" target="_blank" style="color: #2b6cb0; text-decoration: none; display: flex; align-items: center; gap: 0.5rem;"><i class="fas fa-external-link-alt"></i> Live Demo</a>` : ''}
-                                    ${project.repository ? `<a href="${project.repository}" target="_blank" style="color: #2b6cb0; text-decoration: none; display: flex; align-items: center; gap: 0.5rem;"><i class="fab fa-github"></i> Repository</a>` : ''}
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        // Skills
-        if (this.portfolioData.skills.length > 0) {
-            html += `
-                <div class="section">
-                    <h2><i class="fas fa-cogs"></i> Skills</h2>
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                        ${this.portfolioData.skills.map(skill => `
-                            <span style="display: inline-block; padding: 0.5rem 1rem; background: #eff6ff; color: #2b6cb0; border-radius: 20px; font-size: 0.875rem; font-weight: 500;">${skill.name}</span>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        // Education
-        if (this.portfolioData.education.length > 0) {
-            html += `
-                <div class="section">
-                    <h2><i class="fas fa-graduation-cap"></i> Education</h2>
-                    ${this.portfolioData.education.map(edu => `
-                        <div style="margin-bottom: 2rem;">
-                            <h3 style="color: #1a202c; margin-bottom: 0.5rem;">${edu.degree}</h3>
-                            <p style="color: #2b6cb0; font-weight: 600; margin-bottom: 0.25rem;">${edu.school}</p>
-                            ${edu.field ? `<p style="color: #64748b; margin-bottom: 0.5rem;">${edu.field}</p>` : ''}
-                            <div style="display: flex; gap: 2rem;">
-                                ${edu.year ? `<p style="color: #64748b; font-size: 0.875rem;"><i class="fas fa-calendar"></i> ${edu.year}</p>` : ''}
-                                ${edu.gpa ? `<p style="color: #64748b; font-size: 0.875rem;"><i class="fas fa-star"></i> GPA: ${edu.gpa}</p>` : ''}
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        html += '</div>';
-        return html;
-    }
-
-    // Template Management
-    selectTemplate(templateName) {
-        this.currentTemplate = templateName;
-        this.saveToStorage();
-        this.updatePreview();
-        this.showNotification(`${templateName.charAt(0).toUpperCase() + templateName.slice(1)} template selected!`);
-    }
-
-    changeTemplate() {
-        const selector = document.getElementById('templateSelector');
-        this.selectTemplate(selector.value);
-    }
-
-    // Storage
-    saveToStorage() {
-        try {
-            localStorage.setItem('portfolioData', JSON.stringify(this.portfolioData));
-            localStorage.setItem('currentTemplate', this.currentTemplate);
-        } catch (e) {
-            console.error('Error saving to localStorage:', e);
-        }
-    }
-
-    loadFromStorage() {
-        try {
-            const saved = localStorage.getItem('portfolioData');
-            if (saved) {
-                this.portfolioData = { ...this.portfolioData, ...JSON.parse(saved) };
+    });
+    
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal(modal.id);
             }
-            
-            const template = localStorage.getItem('currentTemplate');
-            if (template) {
-                this.currentTemplate = template;
-                const selector = document.getElementById('templateSelector');
-                if (selector) selector.value = template;
-            }
-        } catch (e) {
-            console.error('Error loading from localStorage:', e);
-        }
+        });
+    });
+    
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 50
+        });
     }
-
-    autoSave() {
-        clearTimeout(this.saveTimeout);
-        this.saveTimeout = setTimeout(() => {
-            this.saveToStorage();
-        }, 1000);
-    }
-
-    // Export and Share
-    downloadPDF() {
-        this.showNotification('PDF download feature coming soon!', 'info');
-        // In a real implementation, you would use libraries like jsPDF or puppeteer
-    }
-
-    sharePortfolio() {
-        if (navigator.share && this.hasContent()) {
-            navigator.share({
-                title: `${this.portfolioData.personal.fullName || 'My'} Portfolio`,
-                text: 'Check out my professional portfolio',
-                url: window.location.href
-            }).catch(console.error);
-        } else {
-            // Fallback: copy URL to clipboard
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                this.showNotification('Portfolio URL copied to clipboard!');
-            }).catch(() => {
-                this.showNotification('Sharing not supported in this browser', 'error');
-            });
-        }
-    }
-
-    // Notifications
-    showNotification(message, type = 'success') {
-        // Remove existing notifications
-        const existing = document.querySelector('.notification');
-        if (existing) existing.remove();
-
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.innerHTML = `
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-            <span>${message}</span>
-        `;
-
-        // Add styles
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            animation: slideInRight 0.3s ease;
-        `;
-
-        document.body.appendChild(notification);
-
-        setTimeout(() => {
-            notification.style.animation = 'slideOutRight 0.3s ease forwards';
-            setTimeout(() => notification.remove(), 300);
-        }, 3000);
-    }
-}
-
-// Global functions for HTML onclick events
-function startBuilding() {
-    portfolioBuilder.switchTab('builder');
-}
-
-function showPreview() {
-    portfolioBuilder.switchTab('preview');
-}
-
-function savePersonalInfo() {
-    portfolioBuilder.savePersonalInfo();
-}
-
-function addExperience() {
-    portfolioBuilder.addExperience();
-}
-
-function addProject() {
-    portfolioBuilder.addProject();
-}
-
-function addSkill() {
-    portfolioBuilder.addSkill();
-}
-
-function addEducation() {
-    portfolioBuilder.addEducation();
-}
-
-function clearAll() {
-    portfolioBuilder.clearAll();
-}
-
-function selectTemplate(template) {
-    portfolioBuilder.selectTemplate(template);
-}
-
-function changeTemplate() {
-    portfolioBuilder.changeTemplate();
-}
-
-function downloadPDF() {
-    portfolioBuilder.downloadPDF();
-}
-
-function sharePortfolio() {
-    portfolioBuilder.sharePortfolio();
-}
-
-// Add CSS animations for notifications
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-    }
-`;
-document.head.appendChild(style);
-
-// Initialize the portfolio builder when DOM is ready
-let portfolioBuilder;
-document.addEventListener('DOMContentLoaded', () => {
-    portfolioBuilder = new PortfolioBuilder();
 });
