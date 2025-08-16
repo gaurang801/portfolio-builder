@@ -200,18 +200,38 @@
                     <div class="template-card" data-aos="fade-up" data-aos-delay="300">
                         <div class="template-preview">
                             <div class="template-demo template3-demo">
-                                <div class="demo-grid">
-                                    <div class="demo-item"></div>
-                                    <div class="demo-item"></div>
-                                    <div class="demo-item"></div>
-                                    <div class="demo-item"></div>
-                                </div>
+                                <div class="demo-item"></div>
+                                <div class="demo-item"></div>
+                                <div class="demo-item"></div>
+                                <div class="demo-item"></div>
                             </div>
                         </div>
                         <div class="template-info">
                             <h3>Creative Grid</h3>
                             <p>Dynamic grid layout for creative professionals and designers</p>
                             <button class="btn btn-primary" onclick="selectTemplate('template3')">
+                                <i class="fas fa-check"></i>
+                                Use This Template
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="template-card" data-aos="fade-up" data-aos-delay="400">
+                        <div class="template-preview">
+                            <div class="template-demo template4-demo">
+                                <div class="custom-demo-header"></div>
+                                <div class="custom-demo-nav"></div>
+                                <div class="custom-demo-content">
+                                    <div class="custom-demo-item"></div>
+                                    <div class="custom-demo-item"></div>
+                                    <div class="custom-demo-item"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="template-info">
+                            <h3>Premium Modern</h3>
+                            <p>Ultra-modern design with premium aesthetics and smooth animations</p>
+                            <button class="btn btn-primary" onclick="selectTemplate('template4')">
                                 <i class="fas fa-check"></i>
                                 Use This Template
                             </button>
@@ -340,38 +360,33 @@
             <section id="builder" class="tab-content active">
                 <div class="container">
                     <div class="builder-layout">
+                        <!-- Step Indicator with Connecting Lines -->
+                        <div class="step-indicator">
+                            <div class="step active" data-step="personal">
+                                <div class="step-number">1</div>
+                                <div class="step-label">Personal Info</div>
+                            </div>
+                            <div class="step" data-step="experience">
+                                <div class="step-number">2</div>
+                                <div class="step-label">Experience</div>
+                            </div>
+                            <div class="step" data-step="projects">
+                                <div class="step-number">3</div>
+                                <div class="step-label">Projects</div>
+                            </div>
+                            <div class="step" data-step="skills">
+                                <div class="step-number">4</div>
+                                <div class="step-label">Skills</div>
+                            </div>
+                            <div class="step" data-step="education">
+                                <div class="step-number">5</div>
+                                <div class="step-label">Education</div>
+                            </div>
+                        </div>
+
                         <!-- Progress Bar -->
                         <div class="progress-bar">
-                            <div class="progress-step active" data-step="personal">
-                                <div class="step-icon">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <span>Personal Info</span>
-                            </div>
-                            <div class="progress-step" data-step="experience">
-                                <div class="step-icon">
-                                    <i class="fas fa-briefcase"></i>
-                                </div>
-                                <span>Experience</span>
-                            </div>
-                            <div class="progress-step" data-step="projects">
-                                <div class="step-icon">
-                                    <i class="fas fa-code"></i>
-                                </div>
-                                <span>Projects</span>
-                            </div>
-                            <div class="progress-step" data-step="skills">
-                                <div class="step-icon">
-                                    <i class="fas fa-cogs"></i>
-                                </div>
-                                <span>Skills</span>
-                            </div>
-                            <div class="progress-step" data-step="education">
-                                <div class="step-icon">
-                                    <i class="fas fa-graduation-cap"></i>
-                                </div>
-                                <span>Education</span>
-                            </div>
+                            <div class="progress-fill" style="width: 20%"></div>
                         </div>
 
                         <!-- Content Area -->
@@ -384,39 +399,39 @@
                                 </div>
                                 <form class="portfolio-form">
                                     <div class="form-row">
-                                        <div class="form-group">
+                                        <div class="form-control">
                                             <label for="fullName">Full Name *</label>
                                             <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-control">
                                             <label for="title">Professional Title *</label>
                                             <input type="text" id="title" name="title" placeholder="Full Stack Developer" required>
                                         </div>
                                     </div>
                                     <div class="form-row">
-                                        <div class="form-group">
+                                        <div class="form-control">
                                             <label for="email">Email *</label>
                                             <input type="email" id="email" name="email" placeholder="john@example.com" required>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-control">
                                             <label for="phone">Phone</label>
                                             <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567">
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-control">
                                         <label for="location">Location</label>
                                         <input type="text" id="location" name="location" placeholder="New York, NY">
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-control">
                                         <label for="bio">Professional Bio *</label>
                                         <textarea id="bio" name="bio" rows="4" placeholder="Tell us about your professional journey, skills, and what makes you unique..." required></textarea>
                                     </div>
                                     <div class="form-row">
-                                        <div class="form-group">
+                                        <div class="form-control">
                                             <label for="linkedin">LinkedIn URL</label>
                                             <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/johndoe">
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-control">
                                             <label for="github">GitHub URL</label>
                                             <input type="url" id="github" name="github" placeholder="https://github.com/johndoe">
                                         </div>
@@ -548,6 +563,7 @@
                                 <option value="template1">Modern Minimalist</option>
                                 <option value="template2">Classic Professional</option>
                                 <option value="template3">Creative Grid</option>
+                                <option value="template4">Premium Modern</option>
                             </select>
                             <button class="btn btn-primary" onclick="downloadPDF()">
                                 <i class="fas fa-file-pdf"></i>
@@ -695,7 +711,7 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <form class="auth-form">
+            <form class="auth-form" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label for="loginEmail">Email</label>
                     <input type="email" id="loginEmail" required>
@@ -707,13 +723,17 @@
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
             <div class="social-auth">
-                <button class="btn btn-social google-btn" onclick="loginWith('google')">
+                <button class="btn btn-social google-btn" onclick="loginWith('google')" data-original-text="Continue with Google">
                     <i class="fab fa-google"></i>
                     Continue with Google
                 </button>
-                <button class="btn btn-social github-btn" onclick="loginWith('github')">
+                <button class="btn btn-social github-btn" onclick="loginWith('github')" data-original-text="Continue with GitHub">
                     <i class="fab fa-github"></i>
                     Continue with GitHub
+                </button>
+                <button class="btn btn-social linkedin-btn" onclick="loginWith('linkedin')" data-original-text="Continue with LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                    Continue with LinkedIn
                 </button>
             </div>
             <p class="auth-switch">
@@ -730,7 +750,7 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <form class="auth-form">
+            <form class="auth-form" onsubmit="handleSignup(event)">
                 <div class="form-group">
                     <label for="signupName">Full Name</label>
                     <input type="text" id="signupName" required>
@@ -746,13 +766,17 @@
                 <button type="submit" class="btn btn-primary">Create Account</button>
             </form>
             <div class="social-auth">
-                <button class="btn btn-social google-btn" onclick="signupWith('google')">
+                <button class="btn btn-social google-btn" onclick="signupWith('google')" data-original-text="Sign up with Google">
                     <i class="fab fa-google"></i>
                     Sign up with Google
                 </button>
-                <button class="btn btn-social github-btn" onclick="signupWith('github')">
+                <button class="btn btn-social github-btn" onclick="signupWith('github')" data-original-text="Sign up with GitHub">
                     <i class="fab fa-github"></i>
                     Sign up with GitHub
+                </button>
+                <button class="btn btn-social linkedin-btn" onclick="signupWith('linkedin')" data-original-text="Sign up with LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                    Sign up with LinkedIn
                 </button>
             </div>
             <p class="auth-switch">

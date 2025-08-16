@@ -12,17 +12,54 @@ let portfolioData = {
     education: []
 };
 
+// Authentication check function
+function checkAuthStatus() {
+    if (!isLoggedIn) {
+        showNotification('Please login to access the Portfolio Builder', 'error');
+        showLoginModal();
+        return false;
+    }
+    return true;
+}
+
 // Landing Page Functions
 function showLoginModal() {
-    document.getElementById('loginModal').style.display = 'flex';
+    console.log('showLoginModal called');
+    const modal = document.getElementById('loginModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        console.log('Login modal displayed');
+    } else {
+        console.error('Login modal not found');
+    }
 }
 
 function showSignupModal() {
-    document.getElementById('signupModal').style.display = 'flex';
+    console.log('showSignupModal called');
+    const modal = document.getElementById('signupModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        console.log('Signup modal displayed');
+    } else {
+        console.error('Signup modal not found');
+    }
 }
 
 function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
+    console.log('closeModal called for:', modalId);
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+        document.body.style.overflow = 'auto';
+        console.log('Modal closed:', modalId);
+    } else {
+        console.error('Modal not found:', modalId);
+    }
 }
 
 function switchToSignup() {
@@ -44,19 +81,145 @@ function signupWith(provider) {
 }
 
 function simulateLogin(provider) {
+    // Show loading state
+    const buttons = document.querySelectorAll('.btn-social');
+    buttons.forEach(btn => {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+        btn.disabled = true;
+    });
+    
     setTimeout(() => {
         isLoggedIn = true;
-        currentUser = { name: 'Demo User', email: 'demo@example.com' };
+        let userName = '';
+        let userEmail = '';
         
-        document.getElementById('landing-page').style.display = 'none';
-        document.getElementById('portfolio-app').style.display = 'block';
-        document.getElementById('userName').textContent = currentUser.name;
+        switch(provider) {
+            case 'google':
+                userName = 'Google User';
+                userEmail = 'google@example.com';
+                break;
+            case 'github':
+                userName = 'GitHub User';
+                userEmail = 'github@example.com';
+                break;
+            case 'linkedin':
+                userName = 'LinkedIn User';
+                userEmail = 'linkedin@example.com';
+                break;
+            default:
+                userName = 'Demo User';
+                userEmail = 'demo@example.com';
+        }
+        
+        currentUser = { 
+            name: userName, 
+            email: userEmail 
+        };
+        
+        // Hide landing page and show portfolio app
+        const landingPage = document.getElementById('landing-page');
+        const portfolioApp = document.getElementById('portfolio-app');
+        
+        if (landingPage) landingPage.style.display = 'none';
+        if (portfolioApp) portfolioApp.style.display = 'block';
+        
+        // Update user name
+        const userNameElement = document.getElementById('userName');
+        if (userNameElement) userNameElement.textContent = currentUser.name;
         
         closeModal('loginModal');
         closeModal('signupModal');
         
         initializePortfolioBuilder();
-        showNotification(`Welcome ${currentUser.name}!`);
+        showNotification(`Welcome ${currentUser.name}!`, 'success');
+        
+        // Reset buttons
+        buttons.forEach(btn => {
+            btn.innerHTML = btn.getAttribute('data-original-text') || 'Continue with ' + (provider === 'google' ? 'Google' : provider === 'github' ? 'GitHub' : 'LinkedIn');
+            btn.disabled = false;
+        });
+    }, 1500);
+}
+
+// Enhanced authentication form handling
+function handleLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    if (!email || !password) {
+        showNotification('Please fill in all fields', 'error');
+        return;
+    }
+    
+    // Simulate login process
+    const loginBtn = event.target.querySelector('button[type="submit"]');
+    const originalText = loginBtn.innerHTML;
+    loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+    loginBtn.disabled = true;
+    
+    setTimeout(() => {
+        isLoggedIn = true;
+        currentUser = { name: email.split('@')[0], email: email };
+        
+        // Hide landing page and show portfolio app
+        const landingPage = document.getElementById('landing-page');
+        const portfolioApp = document.getElementById('portfolio-app');
+        
+        if (landingPage) landingPage.style.display = 'none';
+        if (portfolioApp) portfolioApp.style.display = 'block';
+        
+        // Update user name
+        const userNameElement = document.getElementById('userName');
+        if (userNameElement) userNameElement.textContent = currentUser.name;
+        
+        closeModal('loginModal');
+        initializePortfolioBuilder();
+        showNotification(`Welcome back, ${currentUser.name}!`, 'success');
+        
+        loginBtn.innerHTML = originalText;
+        loginBtn.disabled = false;
+    }, 1000);
+}
+
+function handleSignup(event) {
+    event.preventDefault();
+    const name = document.getElementById('signupName').value;
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+    
+    if (!name || !email || !password) {
+        showNotification('Please fill in all fields', 'error');
+        return;
+    }
+    
+    // Simulate signup process
+    const signupBtn = event.target.querySelector('button[type="submit"]');
+    const originalText = signupBtn.innerHTML;
+    signupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+    signupBtn.disabled = true;
+    
+    setTimeout(() => {
+        isLoggedIn = true;
+        currentUser = { name: name, email: email };
+        
+        // Hide landing page and show portfolio app
+        const landingPage = document.getElementById('landing-page');
+        const portfolioApp = document.getElementById('portfolio-app');
+        
+        if (landingPage) landingPage.style.display = 'none';
+        if (portfolioApp) portfolioApp.style.display = 'block';
+        
+        // Update user name
+        const userNameElement = document.getElementById('userName');
+        if (userNameElement) userNameElement.textContent = currentUser.name;
+        
+        closeModal('signupModal');
+        initializePortfolioBuilder();
+        showNotification(`Welcome to Portfolio Builder Pro, ${currentUser.name}!`, 'success');
+        
+        signupBtn.innerHTML = originalText;
+        signupBtn.disabled = false;
     }, 1000);
 }
 
@@ -72,16 +235,47 @@ function toggleMobileMenu() {
 
 // Portfolio Builder Functions
 function initializePortfolioBuilder() {
+    // Check authentication first
+    if (!checkAuthStatus()) {
+        return;
+    }
+    
+    console.log('Initializing Portfolio Builder...');
+    
+    // Ensure portfolio app is visible
+    const portfolioApp = document.getElementById('portfolio-app');
+    if (portfolioApp) {
+        portfolioApp.style.display = 'block';
+        portfolioApp.style.position = 'relative';
+        portfolioApp.style.zIndex = '1001';
+    }
+    
+    // Ensure landing page is hidden
+    const landingPage = document.getElementById('landing-page');
+    if (landingPage) {
+        landingPage.style.display = 'none';
+    }
+    
     loadFromStorage();
     bindEvents();
     updateProgressBar();
     renderCurrentStep();
+    initializeTemplateSelector();
+    
+    // Show welcome message
+    showNotification('Portfolio Builder initialized! Start building your portfolio.', 'info');
+    
+    console.log('Portfolio Builder initialized successfully');
 }
 
 function bindEvents() {
     const navBtns = document.querySelectorAll('.nav-btn');
     navBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
+            // Check authentication before switching tabs
+            if (!checkAuthStatus()) {
+                return;
+            }
             switchTab(e.target.closest('.nav-btn').dataset.tab);
         });
     });
@@ -93,6 +287,11 @@ function bindEvents() {
 }
 
 function switchTab(tabName) {
+    // Check authentication before switching tabs
+    if (!checkAuthStatus()) {
+        return;
+    }
+    
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
 
@@ -103,6 +302,11 @@ function switchTab(tabName) {
 }
 
 function nextStep() {
+    // Check authentication before proceeding
+    if (!checkAuthStatus()) {
+        return;
+    }
+    
     const steps = ['personal', 'experience', 'projects', 'skills', 'education'];
     const currentIndex = steps.indexOf(currentStep);
     
@@ -115,6 +319,11 @@ function nextStep() {
 }
 
 function previousStep() {
+    // Check authentication before proceeding
+    if (!checkAuthStatus()) {
+        return;
+    }
+    
     const steps = ['personal', 'experience', 'projects', 'skills', 'education'];
     const currentIndex = steps.indexOf(currentStep);
     
@@ -129,17 +338,49 @@ function previousStep() {
 function updateProgressBar() {
     const steps = ['personal', 'experience', 'projects', 'skills', 'education'];
     const currentIndex = steps.indexOf(currentStep);
+    const progressPercentage = ((currentIndex + 1) / steps.length) * 100;
     
-    document.querySelectorAll('.progress-step').forEach((step, index) => {
-        step.classList.remove('active');
-        if (index <= currentIndex) step.classList.add('active');
+    // Update progress bar
+    const progressFill = document.querySelector('.progress-fill');
+    if (progressFill) {
+        progressFill.style.width = progressPercentage + '%';
+    }
+    
+    // Update step indicators
+    const stepElements = document.querySelectorAll('.step');
+    stepElements.forEach((step, index) => {
+        step.classList.remove('active', 'completed');
+        
+        if (index === currentIndex) {
+            step.classList.add('active');
+        } else if (index < currentIndex) {
+            step.classList.add('completed');
+        }
     });
+    
+    console.log(`Progress updated: ${progressPercentage}%, Current step: ${currentStep}`);
 }
 
 function renderCurrentStep() {
-    document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
+    console.log('Rendering current step:', currentStep);
+    
+    // Hide all form sections
+    document.querySelectorAll('.form-section').forEach(section => {
+        section.classList.remove('active');
+        section.style.display = 'none';
+    });
+    
+    // Show current form section
     const currentSection = document.getElementById(`${currentStep}-form`);
-    if (currentSection) currentSection.classList.add('active');
+    if (currentSection) {
+        currentSection.classList.add('active');
+        currentSection.style.display = 'block';
+        currentSection.style.position = 'relative';
+        currentSection.style.zIndex = '1003';
+        console.log('Current section displayed:', currentSection.id);
+    } else {
+        console.error('Form section not found:', `${currentStep}-form`);
+    }
     
     updateFormActions();
 }
@@ -280,39 +521,39 @@ function addExperienceForm() {
     
     const experienceHtml = `
         <div class="experience-item" data-id="${experienceId}">
-            <div class="item-header">
-                <h4>Experience Entry</h4>
-                <button type="button" class="btn-remove" onclick="removeItem(this)">
+            <div class="experience-item-header">
+                <div class="experience-item-title">Experience Entry</div>
+                <button type="button" class="remove-experience" onclick="removeItem(this)">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
             <div class="form-row">
-                <div class="form-group">
+                <div class="form-control">
                     <label for="jobTitle_${experienceId}">Job Title</label>
                     <input type="text" name="jobTitle" id="jobTitle_${experienceId}" placeholder="Senior Developer">
                 </div>
-                <div class="form-group">
+                <div class="form-control">
                     <label for="company_${experienceId}">Company</label>
                     <input type="text" name="company" id="company_${experienceId}" placeholder="Tech Corp">
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group">
+                <div class="form-control">
                     <label for="startDate_${experienceId}">Start Date</label>
                     <input type="month" name="startDate" id="startDate_${experienceId}">
                 </div>
-                <div class="form-group">
+                <div class="form-control">
                     <label for="endDate_${experienceId}">End Date</label>
                     <input type="month" name="endDate" id="endDate_${experienceId}">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-control">
                 <label class="checkbox-label">
                     <input type="checkbox" name="currentJob" id="currentJob_${experienceId}" onchange="toggleEndDate(this)">
                     Currently working here
                 </label>
             </div>
-            <div class="form-group">
+            <div class="form-control">
                 <label for="jobDescription_${experienceId}">Description</label>
                 <textarea name="jobDescription" id="jobDescription_${experienceId}" rows="4" placeholder="Describe your responsibilities and achievements..."></textarea>
             </div>
@@ -328,31 +569,31 @@ function addProjectForm() {
     
     const projectHtml = `
         <div class="project-item" data-id="${projectId}">
-            <div class="item-header">
-                <h4>Project Entry</h4>
-                <button type="button" class="btn-remove" onclick="removeItem(this)">
+            <div class="project-item-header">
+                <div class="project-item-title">Project Entry</div>
+                <button type="button" class="remove-project" onclick="removeItem(this)">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
-            <div class="form-group">
+            <div class="form-control">
                 <label for="projectName_${projectId}">Project Name</label>
                 <input type="text" name="projectName" id="projectName_${projectId}" placeholder="Amazing Web App">
             </div>
-            <div class="form-group">
+            <div class="form-control">
                 <label for="projectDescription_${projectId}">Description</label>
                 <textarea name="projectDescription" id="projectDescription_${projectId}" rows="3" placeholder="Describe what this project does..."></textarea>
             </div>
             <div class="form-row">
-                <div class="form-group">
+                <div class="form-control">
                     <label for="technologies_${projectId}">Technologies Used</label>
                     <input type="text" name="technologies" id="technologies_${projectId}" placeholder="React, Node.js, MongoDB">
                 </div>
-                <div class="form-group">
+                <div class="form-control">
                     <label for="projectUrl_${projectId}">Live Demo URL</label>
                     <input type="url" name="projectUrl" id="projectUrl_${projectId}" placeholder="https://myproject.com">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-control">
                 <label for="repositoryUrl_${projectId}">Repository URL</label>
                 <input type="url" name="repositoryUrl" id="repositoryUrl_${projectId}" placeholder="https://github.com/user/project">
             </div>
@@ -368,18 +609,18 @@ function addSkillForm() {
     
     const skillHtml = `
         <div class="skill-item" data-id="${skillId}">
-            <div class="item-header">
-                <h4>Skill Entry</h4>
-                <button type="button" class="btn-remove" onclick="removeItem(this)">
+            <div class="skill-item-header">
+                <div class="skill-item-title">Skill Entry</div>
+                <button type="button" class="remove-skill" onclick="removeItem(this)">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
             <div class="form-row">
-                <div class="form-group">
+                <div class="form-control">
                     <label for="skillName_${skillId}">Skill Name</label>
                     <input type="text" name="skillName" id="skillName_${skillId}" placeholder="JavaScript">
                 </div>
-                <div class="form-group">
+                <div class="form-control">
                     <label for="skillLevel_${skillId}">Proficiency Level</label>
                     <select name="skillLevel" id="skillLevel_${skillId}">
                         <option value="beginner">Beginner</option>
@@ -401,33 +642,33 @@ function addEducationForm() {
     
     const educationHtml = `
         <div class="education-item" data-id="${educationId}">
-            <div class="item-header">
-                <h4>Education Entry</h4>
-                <button type="button" class="btn-remove" onclick="removeItem(this)">
+            <div class="education-item-header">
+                <div class="education-item-title">Education Entry</div>
+                <button type="button" class="remove-education" onclick="removeItem(this)">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
             <div class="form-row">
-                <div class="form-group">
+                <div class="form-control">
                     <label for="degree_${educationId}">Degree</label>
                     <input type="text" name="degree" id="degree_${educationId}" placeholder="Bachelor of Science">
                 </div>
-                <div class="form-group">
+                <div class="form-control">
                     <label for="field_${educationId}">Field of Study</label>
                     <input type="text" name="field" id="field_${educationId}" placeholder="Computer Science">
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group">
+                <div class="form-control">
                     <label for="school_${educationId}">School/University</label>
                     <input type="text" name="school" id="school_${educationId}" placeholder="University of Technology">
                 </div>
-                <div class="form-group">
+                <div class="form-control">
                     <label for="graduationYear_${educationId}">Graduation Year</label>
                     <input type="number" name="graduationYear" id="graduationYear_${educationId}" placeholder="2023">
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-control">
                 <label for="gpa_${educationId}">GPA (optional)</label>
                 <input type="text" name="gpa" id="gpa_${educationId}" placeholder="3.8/4.0">
             </div>
@@ -554,12 +795,22 @@ function populateEducation() {
 
 // Template Functions
 function selectTemplate(templateName) {
+    // Check authentication before selecting template
+    if (!checkAuthStatus()) {
+        return;
+    }
+    
     currentTemplate = templateName;
     updatePreview();
     showNotification(`Template "${templateName}" selected!`);
 }
 
 function changeTemplate() {
+    // Check authentication before changing template
+    if (!checkAuthStatus()) {
+        return;
+    }
+    
     const selector = document.getElementById('templateSelector');
     currentTemplate = selector.value;
     updatePreview();
@@ -585,6 +836,8 @@ function generatePreviewHTML(template) {
             return generateTemplate2HTML(data);
         case 'template3':
             return generateTemplate3HTML(data);
+        case 'template4':
+            return generateTemplate4HTML(data);
         default:
             return generateTemplate1HTML(data);
     }
@@ -760,8 +1013,109 @@ function generateTemplate3HTML(data) {
     `;
 }
 
+function generateTemplate4HTML(data) {
+    return `
+        <div class="template4-preview">
+            <div class="premium-header">
+                <div class="header-content">
+                    <div class="profile-section">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h1 class="name">${data.personal.fullName || 'Your Name'}</h1>
+                            <p class="title">${data.personal.title || 'Professional Title'}</p>
+                            <p class="bio">${data.personal.bio || 'Your professional bio will appear here...'}</p>
+                        </div>
+                    </div>
+                    <div class="contact-section">
+                        ${data.personal.email ? `<div class="contact-item"><i class="fas fa-envelope"></i> ${data.personal.email}</div>` : ''}
+                        ${data.personal.phone ? `<div class="contact-item"><i class="fas fa-phone"></i> ${data.personal.phone}</div>` : ''}
+                        ${data.personal.location ? `<div class="contact-item"><i class="fas fa-map-marker-alt"></i> ${data.personal.location}</div>` : ''}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="premium-content">
+                ${data.experience.length > 0 ? `
+                <section class="content-section experience-section">
+                    <h2><i class="fas fa-briefcase"></i> Professional Experience</h2>
+                    <div class="experience-grid">
+                        ${data.experience.map(exp => `
+                            <div class="experience-card">
+                                <div class="exp-header">
+                                    <h3>${exp.jobTitle}</h3>
+                                    <span class="company">${exp.company}</span>
+                                </div>
+                                <div class="exp-period">${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}</div>
+                                <p class="exp-description">${exp.description}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+                ` : ''}
+                
+                ${data.projects.length > 0 ? `
+                <section class="content-section projects-section">
+                    <h2><i class="fas fa-code"></i> Featured Projects</h2>
+                    <div class="projects-grid">
+                        ${data.projects.map(project => `
+                            <div class="project-card">
+                                <h3>${project.name}</h3>
+                                <p class="project-description">${project.description}</p>
+                                <div class="project-tech">
+                                    <strong>Technologies:</strong> ${project.technologies}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+                ` : ''}
+                
+                ${data.skills.length > 0 ? `
+                <section class="content-section skills-section">
+                    <h2><i class="fas fa-cogs"></i> Skills & Expertise</h2>
+                    <div class="skills-grid">
+                        ${data.skills.map(skill => `
+                            <div class="skill-card ${skill.level}">
+                                <span class="skill-name">${skill.name}</span>
+                                <div class="skill-level-indicator">
+                                    <span class="level-text">${skill.level}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+                ` : ''}
+                
+                ${data.education.length > 0 ? `
+                <section class="content-section education-section">
+                    <h2><i class="fas fa-graduation-cap"></i> Education</h2>
+                    <div class="education-grid">
+                        ${data.education.map(edu => `
+                            <div class="education-card">
+                                <h3>${edu.degree}</h3>
+                                <p class="field">${edu.field}</p>
+                                <p class="school">${edu.school}</p>
+                                <p class="year">${edu.graduationYear}</p>
+                                ${edu.gpa ? `<p class="gpa">GPA: ${edu.gpa}</p>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+                ` : ''}
+            </div>
+        </div>
+    `;
+}
+
 // Export Functions
 function downloadPDF() {
+    // Check authentication before export
+    if (!checkAuthStatus()) {
+        return;
+    }
+    
     const element = document.getElementById('portfolioPreview');
     if (!element) {
         showNotification('No portfolio content to export', 'error');
@@ -784,6 +1138,11 @@ function downloadPDF() {
 }
 
 function downloadPNG() {
+    // Check authentication before export
+    if (!checkAuthStatus()) {
+        return;
+    }
+    
     const element = document.getElementById('portfolioPreview');
     if (!element) {
         showNotification('No portfolio content to export', 'error');
@@ -807,25 +1166,41 @@ function downloadPNG() {
 }
 
 function sharePortfolio() {
-    const shareUrl = `${window.location.origin}${window.location.pathname}?portfolio=${btoa(JSON.stringify(portfolioData))}`;
+    // Check authentication before sharing
+    if (!checkAuthStatus()) {
+        return;
+    }
+    
+    const shareData = {
+        title: 'My Portfolio',
+        text: 'Check out my professional portfolio!',
+        url: window.location.href
+    };
     
     if (navigator.share) {
-        navigator.share({
-            title: 'My Portfolio',
-            text: 'Check out my professional portfolio!',
-            url: shareUrl
-        });
+        navigator.share(shareData);
     } else {
-        navigator.clipboard.writeText(shareUrl).then(() => {
-            showNotification('Portfolio link copied to clipboard!');
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            showNotification('Portfolio link copied to clipboard!', 'success');
         });
     }
 }
 
 // Utility Functions
 function goBack() {
-    document.getElementById('portfolio-app').style.display = 'none';
-    document.getElementById('landing-page').style.display = 'block';
+    // Show landing page and hide portfolio app
+    const landingPage = document.getElementById('landing-page');
+    const portfolioApp = document.getElementById('portfolio-app');
+    
+    if (landingPage) landingPage.style.display = 'block';
+    if (portfolioApp) portfolioApp.style.display = 'none';
+    
+    // Reset login state
+    isLoggedIn = false;
+    currentUser = null;
+    
+    showNotification('Returned to landing page', 'info');
 }
 
 function showUserMenu() {
@@ -837,69 +1212,31 @@ function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function showNotification(message, type = 'success') {
-    const existing = document.querySelector('.notification');
-    if (existing) existing.remove();
-
+// Enhanced notification system
+function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.innerHTML = `
-        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
         <span>${message}</span>
+        <button onclick="this.parentElement.remove()" class="notification-close">
+            <i class="fas fa-times"></i>
+        </button>
     `;
-
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        z-index: 3000;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        animation: slideInRight 0.3s ease;
-    `;
-
+    
     document.body.appendChild(notification);
-
+    
+    // Auto remove after 5 seconds
     setTimeout(() => {
-        notification.style.animation = 'slideOutRight 0.3s ease forwards';
-        setTimeout(() => notification.remove(), 300);
-    }, 4000);
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
 }
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
-    const navLinks = document.querySelectorAll('.nav-links a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            scrollToSection(targetId);
-        });
-    });
-    
-    const authForms = document.querySelectorAll('.auth-form');
-    authForms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            simulateLogin('email');
-        });
-    });
-    
-    const modals = document.querySelectorAll('.modal');
-    modals.forEach(modal => {
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeModal(modal.id);
-            }
-        });
-    });
-    
+    // Initialize AOS
     if (typeof AOS !== 'undefined') {
         AOS.init({
             duration: 800,
@@ -908,4 +1245,119 @@ document.addEventListener('DOMContentLoaded', function() {
             offset: 50
         });
     }
+    
+    // Initialize modals
+    initializeModals();
+    
+    // Initialize form handlers
+    initializeFormHandlers();
+    
+    // Initialize template selector
+    initializeTemplateSelector();
+    
+    // Check if user is already logged in
+    checkInitialAuthStatus();
 });
+
+function checkInitialAuthStatus() {
+    // If user is not logged in, ensure portfolio app is hidden
+    if (!isLoggedIn) {
+        const portfolioApp = document.getElementById('portfolio-app');
+        const landingPage = document.getElementById('landing-page');
+        
+        if (portfolioApp) portfolioApp.style.display = 'none';
+        if (landingPage) landingPage.style.display = 'block';
+        
+        console.log('User not authenticated, showing landing page');
+    } else {
+        // User is logged in, show portfolio app
+        const portfolioApp = document.getElementById('portfolio-app');
+        const landingPage = document.getElementById('landing-page');
+        
+        if (portfolioApp) portfolioApp.style.display = 'block';
+        if (landingPage) landingPage.style.display = 'none';
+        
+        console.log('User authenticated, showing portfolio app');
+        initializePortfolioBuilder();
+    }
+}
+
+function initializeModals() {
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                const modalId = modal.id;
+                closeModal(modalId);
+            }
+        });
+    });
+    
+    // Close modal on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const openModal = document.querySelector('.modal.show');
+            if (openModal) {
+                closeModal(openModal.id);
+            }
+        }
+    });
+}
+
+function initializeFormHandlers() {
+    // Add form submission handlers
+    const loginForm = document.querySelector('#loginModal .auth-form');
+    const signupForm = document.querySelector('#signupModal .auth-form');
+    
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+    
+    if (signupForm) {
+        signupForm.addEventListener('submit', handleSignup);
+    }
+}
+
+function initializeTemplateSelector() {
+    // Initialize template selector in the builder
+    const templateSelector = document.getElementById('templateSelector');
+    if (templateSelector) {
+        templateSelector.value = currentTemplate;
+        templateSelector.addEventListener('change', changeTemplate);
+    }
+}
+
+// Enhanced portfolio builder initialization
+function initializePortfolioBuilder() {
+    console.log('Initializing Portfolio Builder...');
+    
+    // Check authentication first
+    if (!checkAuthStatus()) {
+        return;
+    }
+    
+    // Ensure portfolio app is visible
+    const portfolioApp = document.getElementById('portfolio-app');
+    if (portfolioApp) {
+        portfolioApp.style.display = 'block';
+        portfolioApp.style.position = 'relative';
+        portfolioApp.style.zIndex = '1001';
+    }
+    
+    // Ensure landing page is hidden
+    const landingPage = document.getElementById('landing-page');
+    if (landingPage) {
+        landingPage.style.display = 'none';
+    }
+    
+    loadFromStorage();
+    bindEvents();
+    updateProgressBar();
+    renderCurrentStep();
+    initializeTemplateSelector();
+    
+    // Show welcome message
+    showNotification('Portfolio Builder initialized! Start building your portfolio.', 'info');
+    
+    console.log('Portfolio Builder initialized successfully');
+}
