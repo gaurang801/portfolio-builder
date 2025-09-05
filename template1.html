@@ -76,12 +76,12 @@
         font-size: 1.5rem;
         color: #bb86fc;
     }
-    nav a {
+    nav1 a {
         margin-left: 20px;
         font-weight: bold;
         position: relative;
     }
-    nav a::after {
+    nav1 a::after {
         content: "";
         position: absolute;
         left: 0;
@@ -91,7 +91,7 @@
         background: #ff79c6;
         transition: width 0.3s ease;
     }
-    nav a:hover::after {
+    nav1 a:hover::after {
         width: 100%;
     }
 
@@ -214,7 +214,7 @@
         header {
             flex-direction: column;
         }
-        nav {
+        nav1 {
             margin-top: 10px;
         }
     }
@@ -229,13 +229,13 @@
 
 <header>
     <h1>John Doe</h1>
-    <nav>
+    <nav1>
         <a href="#home">Home</a>
         <a href="#about">About</a>
         <a href="#skills">Skills</a>
         <a href="#projects">Projects</a>
         <a href="#contact">Contact</a>
-    </nav>
+    </nav1>
 </header>
 
 <section id="home">
